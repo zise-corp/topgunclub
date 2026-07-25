@@ -22,6 +22,7 @@ const barlowCondensed = Barlow_Condensed({
   display: 'swap',
 });
 
+// ✅ CORREGIDO: image y logo ahora apuntan a la versión CUADRADA (512x512)
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'SportsActivityLocation',
@@ -31,8 +32,9 @@ const jsonLd = {
   description: 'Escuela y polígono de tiro deportivo bajo techo en Cochabamba, Bolivia. Cursos de armas de fuego, airsoft, rifles PCP, torneos, cumpleaños y eventos.',
   url: 'https://topgunclub.com.bo',
   telephone: '+59169500967',
-  image: 'https://res.cloudinary.com/dj5yikcc4/image/upload/c_pad,w_1200,h_630,b_rgb:0A0A0A/v1781744683/Logo_cdzhn9.png',
-  logo: 'https://res.cloudinary.com/dj5yikcc4/image/upload/v1781744683/Logo_cdzhn9.png',
+  // ✅ CUADRADO 512x512 para Google (logo en resultados de búsqueda)
+  image: 'https://res.cloudinary.com/dj5yikcc4/image/upload/c_fill,w_512,h_512/v1781744683/Logo_cdzhn9.png',
+  logo: 'https://res.cloudinary.com/dj5yikcc4/image/upload/c_fill,w_512,h_512/v1781744683/Logo_cdzhn9.png',
   address: {
     '@type': 'PostalAddress',
     streetAddress: 'Av. Francisco Bedregal entre Lope de Vega y Mostajo, Zona Temporal',
@@ -52,6 +54,7 @@ export const viewport: Viewport = {
   themeColor: '#0A0A0A',
 };
 
+// ✅ RECTANGULAR 1200x630 para redes sociales (OpenGraph)
 const OG_IMAGE =
   'https://res.cloudinary.com/dj5yikcc4/image/upload/c_pad,w_1200,h_630,b_rgb:0A0A0A/v1781744683/Logo_cdzhn9.png';
 
@@ -59,7 +62,7 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://topgunclub.com.bo'),
   title: {
     default: 'Top Gun Club SRL · Polígono de Tiro en Cochabamba, Bolivia',
-    template: '%s | Top Gun Club SRL', // ✅ CORREGIDO: Antes era '%s'
+    template: '%s | Top Gun Club SRL', // ✅ CORREGIDO
   },
   applicationName: 'Top Gun Club SRL',
   keywords: [
@@ -102,7 +105,17 @@ export const metadata: Metadata = {
       'max-video-preview': -1,
     },
   },
-  // ✅ ELIMINADO: El bloque 'icons' se quitó para que Next.js use automáticamente el archivo 'app/icon.png'
+  // ✅ MANTENIDO: Favicon en pestaña del navegador (como funcionaba antes)
+  icons: {
+    icon: {
+      url: 'https://res.cloudinary.com/dj5yikcc4/image/upload/v1781744683/Logo_cdzhn9.png',
+      type: 'image/png',
+    },
+    apple: {
+      url: 'https://res.cloudinary.com/dj5yikcc4/image/upload/v1781744683/Logo_cdzhn9.png',
+      type: 'image/png',
+    },
+  },
   openGraph: {
     locale: 'es_BO',
     type: 'website',
