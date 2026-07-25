@@ -59,7 +59,7 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://topgunclub.com.bo'),
   title: {
     default: 'Top Gun Club SRL · Polígono de Tiro en Cochabamba, Bolivia',
-    template: '%s',
+    template: '%s | Top Gun Club SRL', // ✅ CORREGIDO: Antes era '%s'
   },
   applicationName: 'Top Gun Club SRL',
   keywords: [
@@ -102,16 +102,7 @@ export const metadata: Metadata = {
       'max-video-preview': -1,
     },
   },
-  icons: {
-    icon: {
-      url: 'https://res.cloudinary.com/dj5yikcc4/image/upload/v1781744683/Logo_cdzhn9.png',
-      type: 'image/png',
-    },
-    apple: {
-      url: 'https://res.cloudinary.com/dj5yikcc4/image/upload/v1781744683/Logo_cdzhn9.png',
-      type: 'image/png',
-    },
-  },
+  // ✅ ELIMINADO: El bloque 'icons' se quitó para que Next.js use automáticamente el archivo 'app/icon.png'
   openGraph: {
     locale: 'es_BO',
     type: 'website',
