@@ -62,7 +62,7 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://topgunclub.com.bo'),
   title: {
     default: 'Top Gun Club SRL · Polígono de Tiro en Cochabamba, Bolivia',
-    template: '%s | Top Gun Club SRL', // ✅ CORREGIDO
+    template: '%s | Top Gun Club SRL',
   },
   applicationName: 'Top Gun Club SRL',
   keywords: [
@@ -105,16 +105,40 @@ export const metadata: Metadata = {
       'max-video-preview': -1,
     },
   },
-  // ✅ MANTENIDO: Favicon en pestaña del navegador (como funcionaba antes)
+  // ✅ CORREGIDO: FAVICONS LOCALES (como ZISE)
   icons: {
-    icon: {
-      url: 'https://res.cloudinary.com/dj5yikcc4/image/upload/v1781744683/Logo_cdzhn9.png',
-      type: 'image/png',
-    },
-    apple: {
-      url: 'https://res.cloudinary.com/dj5yikcc4/image/upload/v1781744683/Logo_cdzhn9.png',
-      type: 'image/png',
-    },
+    icon: [
+      {
+        url: '/favicon.ico',
+        sizes: 'any',
+      },
+      {
+        url: '/icon-48x48.png',
+        sizes: '48x48',
+        type: 'image/png',
+      },
+      {
+        url: '/icon-96x96.png',
+        sizes: '96x96',
+        type: 'image/png',
+      },
+      {
+        url: '/icon-144x144.png',
+        sizes: '144x144',
+        type: 'image/png',
+      },
+      {
+        url: '/icon-192x192.png',
+        sizes: '192x192',
+        type: 'image/png',
+      },
+    ],
+    apple: [
+      {
+        url: '/apple-touch-icon.png',
+        sizes: '180x180',
+      },
+    ],
   },
   openGraph: {
     locale: 'es_BO',
