@@ -11,7 +11,8 @@ export const createClient = (request: NextRequest) => {
     },
   });
 
-  const supabase = createServerClient(
+  // Se invoca por sus efectos secundarios (sincroniza cookies de sesión en el request)
+  createServerClient(
     supabaseUrl!,
     supabaseKey!,
     {

@@ -5,9 +5,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Commands
 
 ```bash
-npm run dev      # Start dev server (Next.js, port 3000)
-npm run build    # Production build
-npm run lint     # ESLint via next lint
+npm run dev         # Start dev server (Next.js, port 3000)
+npm run build       # Production build
+npm run lint        # ESLint via next lint (flat config: eslint.config.mjs)
+npm run db:migrate  # Prisma migrations (creates/updates prisma/dev.db)
+npm run db:seed     # Seed: categories, products (prisma/seed-data.json), admin user
+npm run db:studio   # Prisma Studio (visual DB editor)
+node scripts/extract-catalog.mjs  # Regenera prisma/seed-data.json desde datos del catálogo viejo
 ```
 
 No test suite is configured.
@@ -18,15 +22,42 @@ Next.js 15 (App Router) site for **Top Gun Club SRL** — an indoor shooting ran
 
 ### Key directories
 
-- `app/` — pages using App Router. Each route has its own `page.tsx` with `export const metadata` for SEO. Routes: `/`, `/cursos`, `/eventos`, `/catalogo`, `/galeria`, `/contacto`.
-- `components/` — all UI components. No subdirectory structure.
+- `app/` — pages using App Router. Each route has its own `page.tsx` with `export const metadata` for SEO. Routes: `/`, `/cursos`, `/eventos`, `/tienda`, `/galeria`, `/contacto`, `/admin`. `/catalogo` redirects permanently to `/tienda`.
+- `app/api/` — Route Handlers (Node runtime):
+  - `auth/login|logout|me` — admin session (HMAC-signed cookie + bcrypt).
+  - `admin/products`, `admin/products/[id]` — CRUD productos.
+  - `admin/categories`, `admin/categories/[id]` — CRUD categorías.
+  - `admin/upload` — subida de imágenes a Cloudinary (multipart, sesión admin).
+  - `admin/orders`, `admin/orders/[id]` — listado y cambio de estado de pedidos.
+  - `orders` — público: registra un pedido cuando el carrito confirma por WhatsApp.
+- `components/store/` — tienda virtual: `CartContext` (localStorage), `StorePage` (filtros/búsqueda), `ProductModal`, `CartDrawer` (checkout WhatsApp), `CartFab`.
+- `components/admin/` — panel: `AdminPanel` (login + tabs), `ProductManager`, `CategoryManager`, `OrdersManager`.
+- `prisma/` — `schema.prisma` (SQLite: AdminUser, Category, Product, ProductImage, Order, OrderItem), `migrations/`, `seed.mjs` + `seed-data.json`.
+- `lib/` — `site.ts` (contacto + NAV_ITEMS), `db.ts` (Prisma singleton), `auth.ts` (HMAC sesión, bcrypt), `session.ts` (cookies → usuario), `server-dto.ts` (mapeo Prisma→DTO), `validators.ts` (zod), `store-types.ts` (tipos compartidos), `cloudinary-upload.ts` (upload server-side).
 - `hooks/` — `useReveal.ts` drives the scroll-reveal animation system.
-- `lib/site.ts` — single source of truth for contact info (`WA_PHONE`, `PHONE_DISPLAY`), social links (`SOCIALS`), `waLink()` helper, and `NAV_ITEMS` nav config.
-- `lib/cloudinary.ts` — Cloudinary config and `getCloudinaryImage()` helper. Cloud name comes from `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME`.
 
-### No backend — everything routes to WhatsApp
+### Store data flow (important)
 
-There are no API routes, database, or server actions. The contact form (`ContactForm.tsx`) and every CTA build a prefilled WhatsApp URL via `waLink()` in `lib/site.ts` and open it with `window.open`. Validation is client-side only. When adding "submit"-style features, follow this pattern rather than introducing a backend.
+- `/tienda` is a server component with `export const dynamic = 'force-dynamic'` that reads Prisma directly and passes DTOs to the client.
+- Products: `kind = "arma"` (brand/caliber/firearmType columns + `specsJson` for extra specs like Velocidad/Tanque) or `"producto"` (title/description/price/images).
+- Prices are `Decimal` in Prisma; DTOs convert with `Number()` (`lib/server-dto.ts`).
+- Orders get a sequential `number` assigned inside a transaction (SQLite has no autoincrement on non-id fields); unique-conflict retries up to 3 times.
+- The cart lives in the client (`localStorage`, key `tgc_cart_v1`). Checkout POSTs to `/api/orders` and opens WhatsApp with the order text via `waLink()` (`lib/site.ts`). If the POST fails (offline), WhatsApp still opens — the sale is never lost.
+- Admin APIs validate with zod (`lib/validators.ts`) and require the session cookie; every write endpoint re-checks auth server-side.
+
+### Auth (admin)
+
+- Sessions: stateless HMAC-SHA256-signed cookie (`tgc_admin_session`, 7 days). Secret from `SESSION_SECRET` (required in production; dev fallback exists).
+- Passwords: bcrypt via `bcryptjs` (pure JS).
+- `POST /api/auth/login` sets the httpOnly cookie; `/admin` page checks `/api/auth/me` on mount; APIs call `requireAdmin()` from `lib/session.ts`.
+
+### Images (Cloudinary)
+
+Admin uploads go to Cloudinary folder `tienda` through `POST /api/admin/upload` (validates type/size: JPG/PNG/WEBP/GIF/AVIF, ≤10 MB). Product deletes best-effort clean the Cloudinary assets (`cloudinary.api.delete_resources`). `lib/cloudinary-upload.ts` has `uploadImageBuffer()`; `next.config.ts` allowlists `res.cloudinary.com`.
+
+### Legacy experiment (leave alone)
+
+`lib/supabase/`, `middleware.ts` (root), `app/test-supabase/` are an unfinished Supabase experiment from a previous session. The root middleware wraps every request (harmless no-op). Don't extend it; the store uses Prisma + SQLite + custom auth instead.
 
 ### Language
 
@@ -38,11 +69,7 @@ Elements get the CSS class `reveal` to animate in on scroll. `RevealObserver` (a
 
 ### Styling
 
-Pure CSS in `globals.css` using CSS custom properties. Design tokens are defined in `:root`: colors (`--green`, `--bg`, `--surface`, etc.), typography (`--ff-display` = Barlow Condensed, `--ff-body` = Barlow), and layout (`--maxw: 1240px`, `--nav-h: 76px`). No Tailwind, no CSS modules — styles are colocated in `globals.css`.
-
-### Images
-
-All images are hosted on Cloudinary (`res.cloudinary.com/dj5yikcc4`). `next.config.ts` allowlists this hostname for `next/image`. The `next-cloudinary` package is also available for advanced transforms.
+Pure CSS in `globals.css` using CSS custom properties. Design tokens are defined in `:root`: colors (`--green`, `--bg`, `--surface`, etc.), typography (`--ff-display` = Barlow Condensed, `--ff-body` = Barlow), and layout (`--maxw: 1240px`, `--nav-h: 76px`). No Tailwind, no CSS modules — styles are colocated in `globals.css` (store/admin styles are appended at the end of the file).
 
 ### Environment variables
 
@@ -50,6 +77,10 @@ All images are hosted on Cloudinary (`res.cloudinary.com/dj5yikcc4`). `next.conf
 NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=
 NEXT_PUBLIC_CLOUDINARY_API_KEY=
 CLOUDINARY_API_SECRET=
+DATABASE_URL="file:./dev.db"     # Prisma (CLI reads .env; Next reads .env + .env.local)
+SESSION_SECRET=                   # firma de sesiones admin (obligatorio en producción)
+ADMIN_EMAIL=                      # seed: admin inicial (default admin@topgunclub.bo)
+ADMIN_PASSWORD=                   # seed: contraseña admin inicial (default TopgunClub2026!)
 ```
 
-Create `.env.local` with these values for local development.
+Create `.env.local` (and `.env` for Prisma CLI) with these values for local development. See `.env.example`.

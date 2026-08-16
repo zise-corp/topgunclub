@@ -7,6 +7,9 @@ services:
       context: .
       dockerfile: Dockerfile
     restart: unless-stopped
+    volumes:
+      # Persistencia de la base de datos (Prisma SQLite en /app/prisma/dev.db)
+      - prisma-data:/app/prisma
     networks:
       - web
     labels:
@@ -34,3 +37,6 @@ services:
 networks:
   web:
     external: true
+
+volumes:
+  prisma-data:

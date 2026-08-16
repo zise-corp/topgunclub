@@ -11,9 +11,60 @@ Migrado de HTML + React CDN a Next.js 15 (App Router) con TypeScript.
 
 ```bash
 npm install
-npm run dev      # http://localhost:3000
-npm run build    # build de producción
-npm start        # servidor de producción
+npm run db:migrate   # primera vez: crea la base de datos (prisma/dev.db)
+npm run db:seed      # primera vez: carga categorías, 40 productos y el admin
+npm run dev          # http://localhost:3000
+npm run build        # build de producción
+npm start            # servidor de producción
+```
+
+> El seed usa los datos del catálogo anterior (extraídos a `prisma/seed-data.json` con
+> `node scripts/extract-catalog.mjs`). Es re-ejecutable sin duplicar productos.
+
+## Tienda virtual (tienda)
+
+La sección `/tienda` reemplaza al antiguo catálogo (`/catalogo` redirige a `/tienda`) y funciona
+como una tienda virtual con **gestión de venta por WhatsApp**:
+
+- **Productos**: armas (industria, calibre, tipo + especificaciones) y productos/regalos
+  (título, descripción, precio, imágenes múltiples), organizados por **categorías**
+  (Armas de Fuego, PCP, Productos, Regalos…).
+- **Carrito**: se agrega al carrito (persistido en el navegador) y al confirmar el pedido se
+  registra en la base de datos y se abre WhatsApp con el detalle (ítems, cantidades, total,
+  nombre, teléfono y nota) hacia `WA_PHONE` (`lib/site.ts`).
+- **Panel de administración** (`/admin`): con login, permite crear/editar/eliminar productos
+  (subiendo las imágenes a Cloudinary), gestionar categorías y ver/cambiar el estado de los
+  pedidos (recibido → en proceso → completado/cancelado).
+
+### Acceso admin
+
+Credenciales por defecto del seed (¡cambialas en producción!):
+
+- Email: `ADMIN_EMAIL` (por defecto `admin@topgunclub.bo`)
+- Contraseña: `ADMIN_PASSWORD` (por defecto `TopgunClub2026!`)
+
+### Base de datos
+
+- **Prisma + SQLite** (`prisma/dev.db`, gitignored). Schema en `prisma/schema.prisma`
+  (AdminUser, Category, Product, ProductImage, Order, OrderItem).
+- Comandos: `npm run db:migrate` (migraciones), `npm run db:seed`, `npm run db:studio`.
+- Para pasar a Postgres/Supabase: cambiar `provider = "postgresql"` y `DATABASE_URL` en
+  `prisma/schema.prisma` y correr `npm run db:migrate`.
+- Las imágenes se suben a **Cloudinary** (carpeta `tienda`) vía `POST /api/admin/upload`
+  (requiere sesión admin). Las claves van en `.env.local`.
+
+### Variables de entorno
+
+Ver `.env.example`. Mínimo:
+
+```
+NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=
+NEXT_PUBLIC_CLOUDINARY_API_KEY=
+CLOUDINARY_API_SECRET=
+DATABASE_URL="file:./dev.db"
+SESSION_SECRET=<valor aleatorio largo>
+ADMIN_EMAIL=admin@topgunclub.bo
+ADMIN_PASSWORD=<contraseña>
 ```
 
 ## Dónde editar el contenido
@@ -76,11 +127,14 @@ En `components/Stats.tsx`, el array `STATS` contiene los números animados:
 ## Estructura del proyecto
 
 ```
-app/            → páginas (una carpeta por ruta)
+app/            → páginas (una carpeta por ruta: /, /tienda, /admin, /cursos…)
+  api/          → Route Handlers: auth, admin (productos/categorías/pedidos/upload), orders
 components/     → componentes reutilizables
-  ├── server    → Icon, Ph, PageHero, FinalCta, Footer, Stats, Servicios…
-  └── client    → Navbar, FloatingActions, Hero, Testimonios, Counter…
+  store/        → tienda: CartContext, StorePage, ProductModal, CartDrawer, CartFab…
+  admin/        → panel: AdminPanel, ProductManager, CategoryManager, OrdersManager
 hooks/          → useReveal (IntersectionObserver para animaciones)
-lib/            → site.ts (constantes: WA_PHONE, waLink, NAV_ITEMS, SOCIALS)
+lib/            → site.ts, db.ts (Prisma), auth.ts (sesiones), store-types.ts, validators.ts…
+prisma/         → schema.prisma, migraciones, seed.mjs + seed-data.json
+scripts/        → extract-catalog.mjs (migra datos del catálogo viejo), cleanup-cloudinary.mjs
 public/assets/  → imágenes estáticas
 ```

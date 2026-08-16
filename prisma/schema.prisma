@@ -1,0 +1,101 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// TOP GUN CLUB SRL — Tienda virtual
+// Base de datos: SQLite (archivo prisma/dev.db)
+// Para migrar a Postgres/Supabase solo cambia `provider` y `url`.
+// ─────────────────────────────────────────────────────────────────────────────
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ── Usuarios administradores ────────────────────────────────────────────────
+model AdminUser {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String
+  passwordHash String
+  role         String   @default("admin") // reservado para escalar roles
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+// ── Categorías (Armas de Fuego, PCP, Productos, Regalos, …) ────────────────
+model Category {
+  id          String    @id @default(cuid())
+  name        String
+  slug        String    @unique
+  description String?
+  sortOrder   Int       @default(0)
+  products    Product[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+// ── Productos ───────────────────────────────────────────────────────────────
+// kind: "arma" (industria/calibre/tipo + specs) | "producto" (título/descripción)
+model Product {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  description String?
+  price       Decimal
+  currency    String   @default("USD")
+  categoryId  String
+  category    Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  kind        String   @default("producto")
+  // Especificaciones de armas (columnas buscables)
+  brand       String? // industria
+  caliber     String? // calibre
+  firearmType String? // tipo (semiautomática, tiro por tiro, …)
+  // Specs adicionales arbitrarias (Velocidad, Energía, Tanque, …) — JSON string
+  specsJson   String?
+  active      Boolean  @default(true)
+  featured    Boolean  @default(false)
+  images      ProductImage[]
+  orderItems  OrderItem[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([categoryId, active])
+}
+
+// ── Imágenes (Cloudinary) ───────────────────────────────────────────────────
+model ProductImage {
+  id        String  @id @default(cuid())
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  url       String
+  publicId  String?
+  alt       String?
+  sortOrder Int     @default(0)
+}
+
+// ── Pedidos (venta gestionada por WhatsApp, registrada aquí) ────────────────
+model Order {
+  id        String      @id @default(cuid())
+  number    Int         @unique // número correlativo (se asigna en transacción)
+  customer  String?
+  phone     String?
+  note      String?
+  status    String      @default("recibido") // recibido | en_proceso | completado | cancelado
+  total     Decimal
+  currency  String      @default("USD")
+  items     OrderItem[]
+  createdAt DateTime    @default(now())
+}
+
+model OrderItem {
+  id        String  @id @default(cuid())
+  orderId   String
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId String?
+  product   Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+  name      String
+  price     Decimal
+  qty       Int     @default(1)
+}

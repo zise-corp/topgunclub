@@ -109,6 +109,9 @@ export default function Footer() {
               Actividad realizada cumpliendo la <b>Ley&nbsp;400</b> — uso y manejo seguro de armas con fines deportivos.
             </span>
           </span>
+          <a href="/admin" className="footer__admin" aria-label="Acceso administrador">
+            Admin
+          </a>
         </div>
 
         <div className="footer__credit">

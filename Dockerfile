@@ -18,6 +18,9 @@ COPY . .
 # Asegurar permisos de ejecución
 RUN chmod +x node_modules/.bin/next
 
+# Generar el cliente Prisma antes del build
+RUN npx prisma generate
+
 RUN npm run build
 
 # ── Runner ────────────────────────────────────────────────────
@@ -36,8 +39,19 @@ COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
+# Prisma: schema + migraciones + CLI (para `prisma migrate deploy` al arrancar)
+COPY --from=builder --chown=nextjs:nodejs /app/prisma ./prisma
+COPY --from=builder --chown=nextjs:nodejs /app/node_modules/prisma ./node_modules/prisma
+COPY --from=builder --chown=nextjs:nodejs /app/node_modules/@prisma ./node_modules/@prisma
+COPY --from=builder --chown=nextjs:nodejs /app/node_modules/c12 ./node_modules/c12
+COPY --from=builder --chown=nextjs:nodejs /app/node_modules/deepmerge-ts ./node_modules/deepmerge-ts
+COPY --from=builder --chown=nextjs:nodejs /app/node_modules/effect ./node_modules/effect
+COPY --from=builder --chown=nextjs:nodejs /app/node_modules/empathic ./node_modules/empathic
+COPY --from=builder --chown=nextjs:nodejs /app/node_modules/.bin/prisma* ./node_modules/.bin/
+
 USER nextjs
 
 EXPOSE 3000
 
-CMD ["node", "server.js"]
+# Aplica migraciones pendientes y arranca el servidor
+CMD ["sh", "-c", "npx prisma migrate deploy && node server.js"]

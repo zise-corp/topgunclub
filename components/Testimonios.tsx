@@ -98,7 +98,7 @@ export default function Testimonios() {
                   <div className="tst__stars">
                     {[0, 1, 2, 3, 4].map(s => <Icon key={s} name="star" />)}
                   </div>
-                  <blockquote className="tst__quote">"{t.q}"</blockquote>
+                  <blockquote className="tst__quote">&ldquo;{t.q}&rdquo;</blockquote>
                   <figcaption className="tst__who">
                     {t.who}
                     <small>{t.role}</small>

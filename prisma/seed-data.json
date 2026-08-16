@@ -1,0 +1,856 @@
+{
+  "categories": [
+    {
+      "name": "Armas de Fuego",
+      "slug": "armas-de-fuego",
+      "description": "Pistolas, rifles y escopetas de las mejores marcas.",
+      "sortOrder": 1
+    },
+    {
+      "name": "PCP",
+      "slug": "pcp",
+      "description": "Rifles de aire pre-comprimido de alta precisión.",
+      "sortOrder": 2
+    },
+    {
+      "name": "Productos",
+      "slug": "productos",
+      "description": "Accesorios y equipamiento.",
+      "sortOrder": 3
+    },
+    {
+      "name": "Regalos",
+      "slug": "regalos",
+      "description": "Ideas para regalar experiencia y equipamiento.",
+      "sortOrder": 4
+    }
+  ],
+  "products": [
+    {
+      "name": "Phoenix HP22A",
+      "slug": "phoenix-hp22a",
+      "price": 805,
+      "currency": "USD",
+      "categorySlug": "armas-de-fuego",
+      "kind": "arma",
+      "brand": "PHOENIXARMS",
+      "caliber": ".22 LR",
+      "firearmType": "Semiautomática",
+      "specs": {
+        "Grupo": "Pistolas"
+      },
+      "description": "Arma de fuego · Pistolas. Phoenix HP22A de PHOENIXARMS, semiautomática, calibre .22 LR. Disponible en Top Gun Club Cochabamba, Bolivia.",
+      "images": [
+        "https://res.cloudinary.com/dj5yikcc4/image/upload/v1782253819/Phoenix_Arms_HP22A_wuplhw.webp"
+      ]
+    },
+    {
+      "name": "Sarsilmaz B6C",
+      "slug": "sarsilmaz-b6c",
+      "price": 1350,
+      "currency": "USD",
+      "categorySlug": "armas-de-fuego",
+      "kind": "arma",
+      "brand": "SARSILMAZ",
+      "caliber": "9mm",
+      "firearmType": "Semiautomática",
+      "specs": {
+        "Grupo": "Pistolas"
+      },
+      "description": "Arma de fuego · Pistolas. Sarsilmaz B6C de SARSILMAZ, semiautomática, calibre 9mm. Disponible en Top Gun Club Cochabamba, Bolivia.",
+      "images": [
+        "https://res.cloudinary.com/dj5yikcc4/image/upload/v1782253788/Sarsilmaz_B6C_nplhrn.png"
+      ]
+    },
+    {
+      "name": "Walther P22Q",
+      "slug": "walther-p22q",
+      "price": 1945,
+      "currency": "USD",
+      "categorySlug": "armas-de-fuego",
+      "kind": "arma",
+      "brand": "WALTHER",
+      "caliber": ".22 LR",
+      "firearmType": "Semiautomática",
+      "specs": {
+        "Grupo": "Pistolas"
+      },
+      "description": "Arma de fuego · Pistolas. Walther P22Q de WALTHER, semiautomática, calibre .22 LR. Disponible en Top Gun Club Cochabamba, Bolivia.",
+      "images": [
+        "https://res.cloudinary.com/dj5yikcc4/image/upload/v1782155075/Walther_P22Q_qg6xqi.webp"
+      ]
+    },
+    {
+      "name": "Smith & Wesson M&P Compact",
+      "slug": "smith-wesson-m-p-compact",
+      "price": 1945,
+      "currency": "USD",
+      "categorySlug": "armas-de-fuego",
+      "kind": "arma",
+      "brand": "SMITH & WESSON",
+      "caliber": "9mm",
+      "firearmType": "Compacta",
+      "specs": {
+        "Grupo": "Pistolas"
+      },
+      "description": "Arma de fuego · Pistolas. Smith & Wesson M&P Compact de SMITH & WESSON, compacta, calibre 9mm. Disponible en Top Gun Club Cochabamba, Bolivia.",
+      "images": [
+        "https://res.cloudinary.com/dj5yikcc4/image/upload/v1782254018/SMITH_WESSON_M_P_COMPACT_wrdlaz.jpg"
+      ]
+    },
+    {
+      "name": "Ruger M&P Compact",
+      "slug": "ruger-m-p-compact",
+      "price": 1945,
+      "currency": "USD",
+      "categorySlug": "armas-de-fuego",
+      "kind": "arma",
+      "brand": "RUGER",
+      "caliber": "9mm",
+      "firearmType": "Compacta",
+      "specs": {
+        "Grupo": "Pistolas"
+      },
+      "description": "Arma de fuego · Pistolas. Ruger M&P Compact de RUGER, compacta, calibre 9mm. Disponible en Top Gun Club Cochabamba, Bolivia.",
+      "images": [
+        "https://res.cloudinary.com/dj5yikcc4/image/upload/v1782155074/Ruger_M_P_Compact_v8njks.jpg"
+      ]
+    },
+    {
+      "name": "HS Produkt SF19",
+      "slug": "hs-produkt-sf19",
+      "price": 2335,
+      "currency": "USD",
+      "categorySlug": "armas-de-fuego",
+      "kind": "arma",
+      "brand": "HS PRODUKT",
+      "caliber": "9mm",
+      "firearmType": null,
+      "specs": {
+        "Cañón": "4.5\"",
+        "Grupo": "Pistolas"
+      },
+      "description": "Arma de fuego · Pistolas. HS Produkt SF19 de HS PRODUKT, calibre 9mm. Disponible en Top Gun Club Cochabamba, Bolivia.",
+      "images": [
+        "https://res.cloudinary.com/dj5yikcc4/image/upload/v1782253983/HS_Produkt_SF19_rf84ok.jpg"
+      ]
+    },
+    {
+      "name": "Rossi 7022",
+      "slug": "rossi-7022",
+      "price": 730,
+      "currency": "USD",
+      "categorySlug": "armas-de-fuego",
+      "kind": "arma",
+      "brand": "ROSSI",
+      "caliber": ".22 LR",
+      "firearmType": "Semiautomática",
+      "specs": {
+        "Grupo": "Rifles"
+      },
+      "description": "Arma de fuego · Rifles. Rossi 7022 de ROSSI, semiautomática, calibre .22 LR. Disponible en Top Gun Club Cochabamba, Bolivia.",
+      "images": [
+        "https://res.cloudinary.com/dj5yikcc4/image/upload/v1782155562/ROSSI_7022_tkxl7x.webp"
+      ]
+    },
+    {
+      "name": "Rossi Gallery BK",
+      "slug": "rossi-gallery-bk",
+      "price": 1045,
+      "currency": "USD",
+      "categorySlug": "armas-de-fuego",
+      "kind": "arma",
+      "brand": "ROSSI",
+      "caliber": ".22 LR",
+      "firearmType": "Corredera",
+      "specs": {
+        "Grupo": "Rifles"
+      },
+      "description": "Arma de fuego · Rifles. Rossi Gallery BK de ROSSI, corredera, calibre .22 LR. Disponible en Top Gun Club Cochabamba, Bolivia.",
+      "images": [
+        "https://res.cloudinary.com/dj5yikcc4/image/upload/v1782155560/ROSSI_GALLERY_BK_dg6prc.jpg"
+      ]
+    },
+    {
+      "name": "Rossi Gallery Wood",
+      "slug": "rossi-gallery-wood",
+      "price": 1155,
+      "currency": "USD",
+      "categorySlug": "armas-de-fuego",
+      "kind": "arma",
+      "brand": "ROSSI",
+      "caliber": ".22 LR",
+      "firearmType": "Corredera",
+      "specs": {
+        "Grupo": "Rifles"
+      },
+      "description": "Arma de fuego · Rifles. Rossi Gallery Wood de ROSSI, corredera, calibre .22 LR. Disponible en Top Gun Club Cochabamba, Bolivia.",
+      "images": [
+        "https://res.cloudinary.com/dj5yikcc4/image/upload/v1782252886/Rossi_Gallery_Wood_qv244v.jpg"
+      ]
+    },
+    {
+      "name": "Rossi Rio Bravo",
+      "slug": "rossi-rio-bravo",
+      "price": 1355,
+      "currency": "USD",
+      "categorySlug": "armas-de-fuego",
+      "kind": "arma",
+      "brand": "ROSSI",
+      "caliber": ".22 LR",
+      "firearmType": "Palanca",
+      "specs": {
+        "Grupo": "Rifles"
+      },
+      "description": "Arma de fuego · Rifles. Rossi Rio Bravo de ROSSI, palanca, calibre .22 LR. Disponible en Top Gun Club Cochabamba, Bolivia.",
+      "images": [
+        "https://res.cloudinary.com/dj5yikcc4/image/upload/v1782252886/Rossi_Rio_Bravo_naq88u.webp"
+      ]
+    },
+    {
+      "name": "Rossi Goldgloss",
+      "slug": "rossi-goldgloss",
+      "price": 1555,
+      "currency": "USD",
+      "categorySlug": "armas-de-fuego",
+      "kind": "arma",
+      "brand": "ROSSI",
+      "caliber": ".22 LR",
+      "firearmType": "Palanca",
+      "specs": {
+        "Grupo": "Rifles"
+      },
+      "description": "Arma de fuego · Rifles. Rossi Goldgloss de ROSSI, palanca, calibre .22 LR. Disponible en Top Gun Club Cochabamba, Bolivia.",
+      "images": [
+        "https://res.cloudinary.com/dj5yikcc4/image/upload/v1782252886/Rossi_Goldgloss_yug0cs.webp"
+      ]
+    },
+    {
+      "name": "Rossi Rio Bravo Gold Mate",
+      "slug": "rossi-rio-bravo-gold-mate",
+      "price": 1555,
+      "currency": "USD",
+      "categorySlug": "armas-de-fuego",
+      "kind": "arma",
+      "brand": "ROSSI",
+      "caliber": ".22 LR",
+      "firearmType": "Palanca",
+      "specs": {
+        "Grupo": "Rifles"
+      },
+      "description": "Arma de fuego · Rifles. Rossi Rio Bravo Gold Mate de ROSSI, palanca, calibre .22 LR. Disponible en Top Gun Club Cochabamba, Bolivia.",
+      "images": [
+        "https://res.cloudinary.com/dj5yikcc4/image/upload/v1782155529/ROSSI_RIO_BRAVO_GOLD_MATE_n65xtf.jpg"
+      ]
+    },
+    {
+      "name": "Mendoza Puma (Squad)",
+      "slug": "mendoza-puma-squad",
+      "price": 1015,
+      "currency": "USD",
+      "categorySlug": "armas-de-fuego",
+      "kind": "arma",
+      "brand": "MENDOZA",
+      "caliber": null,
+      "firearmType": "Varilla",
+      "specs": {
+        "Modelo": "1911",
+        "Grupo": "Rifles"
+      },
+      "description": "Arma de fuego · Rifles. Mendoza Puma (Squad) de MENDOZA, varilla. Disponible en Top Gun Club Cochabamba, Bolivia.",
+      "images": [
+        "https://res.cloudinary.com/dj5yikcc4/image/upload/v1782155527/Mendoza_Puma_Squad_tgm0cw.jpg"
+      ]
+    },
+    {
+      "name": "Winchester Wildcat",
+      "slug": "winchester-wildcat",
+      "price": 1345,
+      "currency": "USD",
+      "categorySlug": "armas-de-fuego",
+      "kind": "arma",
+      "brand": "WINCHESTER",
+      "caliber": ".22 LR",
+      "firearmType": null,
+      "specs": {
+        "Grupo": "Rifles"
+      },
+      "description": "Arma de fuego · Rifles. Winchester Wildcat de WINCHESTER, calibre .22 LR. Disponible en Top Gun Club Cochabamba, Bolivia.",
+      "images": [
+        "https://res.cloudinary.com/dj5yikcc4/image/upload/v1782155526/Winchester_Wildcat_hqgfdj.webp"
+      ]
+    },
+    {
+      "name": "Kriss DMK22C FDE",
+      "slug": "kriss-dmk22c-fde",
+      "price": 2640,
+      "currency": "USD",
+      "categorySlug": "armas-de-fuego",
+      "kind": "arma",
+      "brand": "KRISS USA",
+      "caliber": ".22 LR",
+      "firearmType": null,
+      "specs": {
+        "Grupo": "Rifles"
+      },
+      "description": "Arma de fuego · Rifles. Kriss DMK22C FDE de KRISS USA, calibre .22 LR. Disponible en Top Gun Club Cochabamba, Bolivia.",
+      "images": [
+        "https://res.cloudinary.com/dj5yikcc4/image/upload/v1782254082/KRISS_DMK22C_FDE_oodapo.jpg"
+      ]
+    },
+    {
+      "name": "Kriss DMK22C BK",
+      "slug": "kriss-dmk22c-bk",
+      "price": 2420,
+      "currency": "USD",
+      "categorySlug": "armas-de-fuego",
+      "kind": "arma",
+      "brand": "KRISS USA",
+      "caliber": ".22 LR",
+      "firearmType": null,
+      "specs": {
+        "Grupo": "Rifles"
+      },
+      "description": "Arma de fuego · Rifles. Kriss DMK22C BK de KRISS USA, calibre .22 LR. Disponible en Top Gun Club Cochabamba, Bolivia.",
+      "images": [
+        "https://res.cloudinary.com/dj5yikcc4/image/upload/v1782155512/KRISS_DMK22C_BK_pucyem.webp"
+      ]
+    },
+    {
+      "name": "CZ 457 Training",
+      "slug": "cz-457-training",
+      "price": 2640,
+      "currency": "USD",
+      "categorySlug": "armas-de-fuego",
+      "kind": "arma",
+      "brand": "CZ",
+      "caliber": ".22 LR",
+      "firearmType": null,
+      "specs": {
+        "Grupo": "Rifles"
+      },
+      "description": "Arma de fuego · Rifles. CZ 457 Training de CZ, calibre .22 LR. Disponible en Top Gun Club Cochabamba, Bolivia.",
+      "images": [
+        "https://res.cloudinary.com/dj5yikcc4/image/upload/v1782155512/CZ_457_TRAINING_xdzpkr.webp"
+      ]
+    },
+    {
+      "name": "Boito Reunas SB",
+      "slug": "boito-reunas-sb",
+      "price": 630,
+      "currency": "USD",
+      "categorySlug": "armas-de-fuego",
+      "kind": "arma",
+      "brand": "BOITO",
+      "caliber": "12",
+      "firearmType": "2 tiros",
+      "specs": {
+        "Grupo": "Escopetas"
+      },
+      "description": "Arma de fuego · Escopetas. Boito Reunas SB de BOITO, 2 tiros, calibre 12. Disponible en Top Gun Club Cochabamba, Bolivia.",
+      "images": [
+        "https://res.cloudinary.com/dj5yikcc4/image/upload/v1782155745/Boito_REUNA_SB_j6xjtj.jpg"
+      ]
+    },
+    {
+      "name": "Boito Miura Supreme",
+      "slug": "boito-miura-supreme",
+      "price": 1540,
+      "currency": "USD",
+      "categorySlug": "armas-de-fuego",
+      "kind": "arma",
+      "brand": "BOITO",
+      "caliber": "12",
+      "firearmType": null,
+      "specs": {
+        "Grupo": "Escopetas"
+      },
+      "description": "Arma de fuego · Escopetas. Boito Miura Supreme de BOITO, calibre 12. Disponible en Top Gun Club Cochabamba, Bolivia.",
+      "images": [
+        "https://res.cloudinary.com/dj5yikcc4/image/upload/v1782253088/Boito_Miura_Supreme_vt5xxs.jpg"
+      ]
+    },
+    {
+      "name": "Boito Miura Special",
+      "slug": "boito-miura-special",
+      "price": 1400,
+      "currency": "USD",
+      "categorySlug": "armas-de-fuego",
+      "kind": "arma",
+      "brand": "BOITO",
+      "caliber": "12",
+      "firearmType": null,
+      "specs": {
+        "Grupo": "Escopetas"
+      },
+      "description": "Arma de fuego · Escopetas. Boito Miura Special de BOITO, calibre 12. Disponible en Top Gun Club Cochabamba, Bolivia.",
+      "images": [
+        "https://res.cloudinary.com/dj5yikcc4/image/upload/v1782155745/Boito_MIURA_SPECIAL_mh1myu.webp"
+      ]
+    },
+    {
+      "name": "Uzkon T17/T16",
+      "slug": "uzkon-t17-t16",
+      "price": 715,
+      "currency": "USD",
+      "categorySlug": "armas-de-fuego",
+      "kind": "arma",
+      "brand": "UZKON",
+      "caliber": "12",
+      "firearmType": null,
+      "specs": {
+        "Grupo": "Escopetas"
+      },
+      "description": "Arma de fuego · Escopetas. Uzkon T17/T16 de UZKON, calibre 12. Disponible en Top Gun Club Cochabamba, Bolivia.",
+      "images": [
+        "https://res.cloudinary.com/dj5yikcc4/image/upload/v1782253088/Uzkon_T16_T17_o7y4ws.jpg"
+      ]
+    },
+    {
+      "name": "Taurus ST12",
+      "slug": "taurus-st12",
+      "price": 1320,
+      "currency": "USD",
+      "categorySlug": "armas-de-fuego",
+      "kind": "arma",
+      "brand": "TAURUS",
+      "caliber": "12",
+      "firearmType": null,
+      "specs": {
+        "Grupo": "Escopetas"
+      },
+      "description": "Arma de fuego · Escopetas. Taurus ST12 de TAURUS, calibre 12. Disponible en Top Gun Club Cochabamba, Bolivia.",
+      "images": [
+        "https://res.cloudinary.com/dj5yikcc4/image/upload/v1782155906/TAURUS_ST12_yrkwfa.jpg"
+      ]
+    },
+    {
+      "name": "Hatsan Escort AS",
+      "slug": "hatsan-escort-as",
+      "price": 1045,
+      "currency": "USD",
+      "categorySlug": "armas-de-fuego",
+      "kind": "arma",
+      "brand": "HATSAN",
+      "caliber": "12",
+      "firearmType": null,
+      "specs": {
+        "Grupo": "Escopetas"
+      },
+      "description": "Arma de aire comprimido · Escopetas. Hatsan Escort AS de HATSAN, calibre 12. Disponible en Top Gun Club Cochabamba, Bolivia.",
+      "images": [
+        "https://res.cloudinary.com/dj5yikcc4/image/upload/v1782155744/Hatsan_Escort_AS_qf2rbi.jpg"
+      ]
+    },
+    {
+      "name": "Hatsan Escort Luxano",
+      "slug": "hatsan-escort-luxano",
+      "price": 1540,
+      "currency": "USD",
+      "categorySlug": "armas-de-fuego",
+      "kind": "arma",
+      "brand": "HATSAN",
+      "caliber": "12",
+      "firearmType": null,
+      "specs": {
+        "Grupo": "Escopetas"
+      },
+      "description": "Arma de aire comprimido · Escopetas. Hatsan Escort Luxano de HATSAN, calibre 12. Disponible en Top Gun Club Cochabamba, Bolivia.",
+      "images": [
+        "https://res.cloudinary.com/dj5yikcc4/image/upload/v1782155744/Hatsan_Escort_Luxano_vrff31.jpg"
+      ]
+    },
+    {
+      "name": "Hatsan Escort Supreme",
+      "slug": "hatsan-escort-supreme",
+      "price": 1320,
+      "currency": "USD",
+      "categorySlug": "armas-de-fuego",
+      "kind": "arma",
+      "brand": "HATSAN",
+      "caliber": "12",
+      "firearmType": null,
+      "specs": {
+        "Grupo": "Escopetas"
+      },
+      "description": "Arma de aire comprimido · Escopetas. Hatsan Escort Supreme de HATSAN, calibre 12. Disponible en Top Gun Club Cochabamba, Bolivia.",
+      "images": [
+        "https://res.cloudinary.com/dj5yikcc4/image/upload/v1782155744/Hatsan_Escort_Supreme_seceji.jpg"
+      ]
+    },
+    {
+      "name": "Hatsan Escort Supreme Max",
+      "slug": "hatsan-escort-supreme-max",
+      "price": 1485,
+      "currency": "USD",
+      "categorySlug": "armas-de-fuego",
+      "kind": "arma",
+      "brand": "HATSAN",
+      "caliber": "12",
+      "firearmType": null,
+      "specs": {
+        "Grupo": "Escopetas"
+      },
+      "description": "Arma de aire comprimido · Escopetas. Hatsan Escort Supreme Max de HATSAN, calibre 12. Disponible en Top Gun Club Cochabamba, Bolivia.",
+      "images": [
+        "https://res.cloudinary.com/dj5yikcc4/image/upload/v1782155743/Hatsan_Escort_Supreme_Max_ribwdj.jpg"
+      ]
+    },
+    {
+      "name": "Bull Boss QE",
+      "slug": "bull-boss-qe",
+      "price": 790,
+      "currency": "USD",
+      "categorySlug": "pcp",
+      "kind": "arma",
+      "brand": "HATSAN",
+      "caliber": "5,5 mm",
+      "firearmType": "Tiro por tiro",
+      "specs": {
+        "Velocidad": "1070 fps",
+        "Energía": "51 Jules",
+        "Capacidad": "10",
+        "Tanque": "230 cc",
+        "Presión": "200 Bar",
+        "Disparos": "45",
+        "Cañón": "23\"",
+        "Grupo": "Rifles PCP · Tiro por Tiro"
+      },
+      "description": "Arma de aire comprimido · Rifles PCP · Tiro por Tiro. Bull Boss QE de HATSAN, tiro por tiro, calibre 5,5 mm. Disponible en Top Gun Club Cochabamba, Bolivia.",
+      "images": [
+        "https://res.cloudinary.com/dj5yikcc4/image/upload/v1782253260/BULL_BOSS_QE_gvvamx.webp"
+      ]
+    },
+    {
+      "name": "AT44-10 Tact QE",
+      "slug": "at44-10-tact-qe",
+      "price": 805,
+      "currency": "USD",
+      "categorySlug": "pcp",
+      "kind": "arma",
+      "brand": "HATSAN",
+      "caliber": "5,5 mm",
+      "firearmType": "Tiro por tiro",
+      "specs": {
+        "Velocidad": "970 fps",
+        "Energía": "42 Jules",
+        "Capacidad": "10",
+        "Tanque": "180 cc",
+        "Presión": "200 Bar",
+        "Disparos": "55",
+        "Cañón": "19,4\"",
+        "Peso": "4,3 kg",
+        "Grupo": "Rifles PCP · Tiro por Tiro"
+      },
+      "description": "Arma de aire comprimido · Rifles PCP · Tiro por Tiro. AT44-10 Tact QE de HATSAN, tiro por tiro, calibre 5,5 mm. Disponible en Top Gun Club Cochabamba, Bolivia.",
+      "images": [
+        "https://res.cloudinary.com/dj5yikcc4/image/upload/v1782156060/AT_44_-_10_TACT_QE_fbexnr.jpg"
+      ]
+    },
+    {
+      "name": "Predator Bolt",
+      "slug": "predator-bolt",
+      "price": 880,
+      "currency": "USD",
+      "categorySlug": "pcp",
+      "kind": "arma",
+      "brand": "HATSAN",
+      "caliber": "5,5 mm",
+      "firearmType": "Tiro por tiro",
+      "specs": {
+        "Velocidad": "1150 fps",
+        "Energía": "58 Jules",
+        "Capacidad": "14",
+        "Tanque": "565 cc",
+        "Presión": "200 Bar",
+        "Disparos": "48",
+        "Cañón": "23\"",
+        "Peso": "5,1 kg",
+        "Grupo": "Rifles PCP · Tiro por Tiro"
+      },
+      "description": "Arma de aire comprimido · Rifles PCP · Tiro por Tiro. Predator Bolt de HATSAN, tiro por tiro, calibre 5,5 mm. Disponible en Top Gun Club Cochabamba, Bolivia.",
+      "images": [
+        "https://res.cloudinary.com/dj5yikcc4/image/upload/v1782253684/Hatsan_Predator_Bolt_eavxce.webp"
+      ]
+    },
+    {
+      "name": "Airmax Bolt",
+      "slug": "airmax-bolt",
+      "price": 880,
+      "currency": "USD",
+      "categorySlug": "pcp",
+      "kind": "arma",
+      "brand": "HATSAN",
+      "caliber": "5,5 mm",
+      "firearmType": "Tiro por tiro",
+      "specs": {
+        "Velocidad": "1170 fps",
+        "Energía": "51 Jules",
+        "Capacidad": "10",
+        "Tanque": "490 cc",
+        "Presión": "200 Bar",
+        "Disparos": "95",
+        "Cañón": "23\"",
+        "Peso": "4,9 kg",
+        "Grupo": "Rifles PCP · Tiro por Tiro"
+      },
+      "description": "Arma de aire comprimido · Rifles PCP · Tiro por Tiro. Airmax Bolt de HATSAN, tiro por tiro, calibre 5,5 mm. Disponible en Top Gun Club Cochabamba, Bolivia.",
+      "images": [
+        "https://res.cloudinary.com/dj5yikcc4/image/upload/v1782156059/Hatsan_AIR_MAX_BOLT_d4uul9.jpg"
+      ]
+    },
+    {
+      "name": "Nova Tact Compact",
+      "slug": "nova-tact-compact",
+      "price": 940,
+      "currency": "USD",
+      "categorySlug": "pcp",
+      "kind": "arma",
+      "brand": "HATSAN",
+      "caliber": "5,5 mm",
+      "firearmType": "Tiro por tiro",
+      "specs": {
+        "Velocidad": "1030 fps",
+        "Energía": "53,5 Jules",
+        "Capacidad": "10",
+        "Tanque": "500 cc",
+        "Presión": "250 Bar",
+        "Disparos": "150",
+        "Cañón": "23\"",
+        "Peso": "4,4 kg",
+        "Grupo": "Rifles PCP · Tiro por Tiro"
+      },
+      "description": "Arma de aire comprimido · Rifles PCP · Tiro por Tiro. Nova Tact Compact de HATSAN, tiro por tiro, calibre 5,5 mm. Disponible en Top Gun Club Cochabamba, Bolivia.",
+      "images": [
+        "https://res.cloudinary.com/dj5yikcc4/image/upload/v1782156058/Hatsan_NOVA_TACT_COMPACT_wbys1j.webp"
+      ]
+    },
+    {
+      "name": "Gladius",
+      "slug": "gladius",
+      "price": 980,
+      "currency": "USD",
+      "categorySlug": "pcp",
+      "kind": "arma",
+      "brand": "HATSAN",
+      "caliber": "5,5 mm",
+      "firearmType": "Tiro por tiro",
+      "specs": {
+        "Velocidad": "970 fps",
+        "Energía": "42 Jules",
+        "Capacidad": "10",
+        "Tanque": "255 cc",
+        "Presión": "200 Bar",
+        "Disparos": "60",
+        "Cañón": "19,4\"",
+        "Peso": "4,65 kg",
+        "Grupo": "Rifles PCP · Tiro por Tiro"
+      },
+      "description": "Arma de aire comprimido · Rifles PCP · Tiro por Tiro. Gladius de HATSAN, tiro por tiro, calibre 5,5 mm. Disponible en Top Gun Club Cochabamba, Bolivia.",
+      "images": [
+        "https://res.cloudinary.com/dj5yikcc4/image/upload/v1782253418/Gladius_hahbj6.jpg"
+      ]
+    },
+    {
+      "name": "BT65SB-W",
+      "slug": "bt65sb-w",
+      "price": 1100,
+      "currency": "USD",
+      "categorySlug": "pcp",
+      "kind": "arma",
+      "brand": "HATSAN",
+      "caliber": "5,5 mm",
+      "firearmType": "Tiro por tiro",
+      "specs": {
+        "Velocidad": "1180 fps",
+        "Energía": "61 Jules",
+        "Capacidad": "10",
+        "Tanque": "255 cc",
+        "Presión": "200 Bar",
+        "Disparos": "28",
+        "Cañón": "23\"",
+        "Peso": "4,3 kg",
+        "Grupo": "Rifles PCP · Tiro por Tiro"
+      },
+      "description": "Arma de aire comprimido · Rifles PCP · Tiro por Tiro. BT65SB-W de HATSAN, tiro por tiro, calibre 5,5 mm. Disponible en Top Gun Club Cochabamba, Bolivia.",
+      "images": [
+        "https://res.cloudinary.com/dj5yikcc4/image/upload/v1782253411/hatsan-bt65-sb-w_wlrlxx.png"
+      ]
+    },
+    {
+      "name": "BT65SB Elite QE",
+      "slug": "bt65sb-elite-qe",
+      "price": 1160,
+      "currency": "USD",
+      "categorySlug": "pcp",
+      "kind": "arma",
+      "brand": "HATSAN",
+      "caliber": "5,5 mm",
+      "firearmType": "Tiro por tiro",
+      "specs": {
+        "Velocidad": "1180 fps",
+        "Energía": "61 Jules",
+        "Capacidad": "10",
+        "Tanque": "255 cc",
+        "Presión": "200 Bar",
+        "Disparos": "28",
+        "Cañón": "23\"",
+        "Peso": "4,4 kg",
+        "Grupo": "Rifles PCP · Tiro por Tiro"
+      },
+      "description": "Arma de aire comprimido · Rifles PCP · Tiro por Tiro. BT65SB Elite QE de HATSAN, tiro por tiro, calibre 5,5 mm. Disponible en Top Gun Club Cochabamba, Bolivia.",
+      "images": [
+        "https://res.cloudinary.com/dj5yikcc4/image/upload/v1782156056/Hatsan_BT65SB_ELITE_QE_mxuvuw.webp"
+      ]
+    },
+    {
+      "name": "Nova Star",
+      "slug": "nova-star",
+      "price": 1175,
+      "currency": "USD",
+      "categorySlug": "pcp",
+      "kind": "arma",
+      "brand": "HATSAN",
+      "caliber": "5,5 mm",
+      "firearmType": "Tiro por tiro",
+      "specs": {
+        "Velocidad": "1000 fps",
+        "Energía": "53,5 Jules",
+        "Capacidad": "12",
+        "Tanque": "480 cc",
+        "Presión": "250 Bar",
+        "Disparos": "100",
+        "Cañón": "23\"",
+        "Peso": "3,8 kg",
+        "Grupo": "Rifles PCP · Tiro por Tiro"
+      },
+      "description": "Arma de aire comprimido · Rifles PCP · Tiro por Tiro. Nova Star de HATSAN, tiro por tiro, calibre 5,5 mm. Disponible en Top Gun Club Cochabamba, Bolivia.",
+      "images": [
+        "https://res.cloudinary.com/dj5yikcc4/image/upload/v1782156054/Hatsan_NOVA_STAR_wirf6h.jpg"
+      ]
+    },
+    {
+      "name": "Hercules Bully",
+      "slug": "hercules-bully",
+      "price": 1370,
+      "currency": "USD",
+      "categorySlug": "pcp",
+      "kind": "arma",
+      "brand": "HATSAN",
+      "caliber": "5,5 mm",
+      "firearmType": "Tiro por tiro",
+      "specs": {
+        "Velocidad": "1230 fps",
+        "Energía": "67 Jules",
+        "Capacidad": "14",
+        "Tanque": "500 cc",
+        "Presión": "250 Bar",
+        "Disparos": "40",
+        "Cañón": "23\"",
+        "Peso": "4,65 kg",
+        "Grupo": "Rifles PCP · Tiro por Tiro"
+      },
+      "description": "Arma de aire comprimido · Rifles PCP · Tiro por Tiro. Hercules Bully de HATSAN, tiro por tiro, calibre 5,5 mm. Disponible en Top Gun Club Cochabamba, Bolivia.",
+      "images": [
+        "https://res.cloudinary.com/dj5yikcc4/image/upload/v1782253723/Hatsan_HERCULES_BULLY_khyuo5.jpg"
+      ]
+    },
+    {
+      "name": "Galatian Tact Auto",
+      "slug": "galatian-tact-auto",
+      "price": 1175,
+      "currency": "USD",
+      "categorySlug": "pcp",
+      "kind": "arma",
+      "brand": "HATSAN",
+      "caliber": "5,5 mm",
+      "firearmType": "Semiautomático",
+      "specs": {
+        "Velocidad": "950 fps",
+        "Energía": "39,8 Jules",
+        "Capacidad": "12",
+        "Tanque": "255 cc",
+        "Presión": "200 Bar",
+        "Disparos": "50",
+        "Cañón": "19,7\"",
+        "Peso": "4,15 kg",
+        "Grupo": "Rifles PCP · Semiautomáticos"
+      },
+      "description": "Arma de aire comprimido · Rifles PCP · Semiautomáticos. Galatian Tact Auto de HATSAN, semiautomático, calibre 5,5 mm. Disponible en Top Gun Club Cochabamba, Bolivia.",
+      "images": [
+        "https://res.cloudinary.com/dj5yikcc4/image/upload/v1782156055/Hatsan_GALATIAN_TACT_AUTO_fxpfmh.png"
+      ]
+    },
+    {
+      "name": "Barrage",
+      "slug": "barrage",
+      "price": 1450,
+      "currency": "USD",
+      "categorySlug": "pcp",
+      "kind": "arma",
+      "brand": "HATSAN",
+      "caliber": "5,5 mm",
+      "firearmType": "Semiautomático",
+      "specs": {
+        "Velocidad": "970 fps",
+        "Energía": "42 Jules",
+        "Capacidad": "12",
+        "Tanque": "500 cc",
+        "Presión": "250 Bar",
+        "Disparos": "120",
+        "Cañón": "19,7\"",
+        "Peso": "4,62 kg",
+        "Grupo": "Rifles PCP · Semiautomáticos"
+      },
+      "description": "Arma de aire comprimido · Rifles PCP · Semiautomáticos. Barrage de HATSAN, semiautomático, calibre 5,5 mm. Disponible en Top Gun Club Cochabamba, Bolivia.",
+      "images": [
+        "https://res.cloudinary.com/dj5yikcc4/image/upload/v1782156053/Hatsan_BARRAGE_wzremd.webp"
+      ]
+    },
+    {
+      "name": "Bull Master",
+      "slug": "bull-master",
+      "price": 1450,
+      "currency": "USD",
+      "categorySlug": "pcp",
+      "kind": "arma",
+      "brand": "HATSAN",
+      "caliber": "5,5 mm",
+      "firearmType": "Semiautomático",
+      "specs": {
+        "Velocidad": "970 fps",
+        "Energía": "42 Jules",
+        "Capacidad": "12",
+        "Tanque": "530 cc",
+        "Presión": "250 Bar",
+        "Disparos": "120",
+        "Cañón": "19,7\"",
+        "Peso": "4,7 kg",
+        "Grupo": "Rifles PCP · Semiautomáticos"
+      },
+      "description": "Arma de aire comprimido · Rifles PCP · Semiautomáticos. Bull Master de HATSAN, semiautomático, calibre 5,5 mm. Disponible en Top Gun Club Cochabamba, Bolivia.",
+      "images": [
+        "https://res.cloudinary.com/dj5yikcc4/image/upload/v1782156053/Hatsan_BULL_MASTER_shtsl4.jpg"
+      ]
+    },
+    {
+      "name": "Bomba Manual de Llenado",
+      "slug": "bomba-manual-de-llenado",
+      "price": 200,
+      "currency": "USD",
+      "categorySlug": "productos",
+      "kind": "producto",
+      "brand": null,
+      "caliber": null,
+      "firearmType": null,
+      "specs": {
+        "Presión": "200 Bar",
+        "Grupo": "Accesorios"
+      },
+      "description": "Bomba Manual de Llenado — accesorio disponible en la tienda de Top Gun Club Cochabamba.",
+      "images": [
+        "https://res.cloudinary.com/dj5yikcc4/image/upload/v1782253411/Bomba_Manual_hp8f0r.jpg"
+      ]
+    }
+  ]
+}

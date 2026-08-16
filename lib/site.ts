@@ -39,11 +39,13 @@ export const NAV_ITEMS: NavItem[] = [
     ]
   },
   { 
-    label: 'Catálogo', 
-    href: '/catalogo',
+    label: 'Tienda', 
+    href: '/tienda',
     children: [
-      { label: 'Armas de Fuego', href: '/catalogo#fuego' },
-      { label: 'PCP', href: '/catalogo#pcp' },
+      { label: 'Armas de Fuego', href: '/tienda?cat=armas-de-fuego' },
+      { label: 'PCP', href: '/tienda?cat=pcp' },
+      { label: 'Productos', href: '/tienda?cat=productos' },
+      { label: 'Regalos', href: '/tienda?cat=regalos' },
     ]
   },
   { label: 'Galería', href: '/galeria' },

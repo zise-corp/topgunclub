@@ -3,7 +3,8 @@ import type { SVGProps } from 'react';
 export type IconName =
   | 'whatsapp' | 'phone' | 'pin' | 'clock' | 'arrow' | 'up' | 'check'
   | 'shield' | 'target' | 'star' | 'facebook' | 'instagram' | 'tiktok'
-  | 'food' | 'calendar' | 'users' | 'plus' | 'chevron';
+  | 'food' | 'calendar' | 'users' | 'plus' | 'chevron'
+  | 'cart' | 'close' | 'minus' | 'trash' | 'edit' | 'search' | 'image' | 'logout' | 'package' | 'tag';
 
 interface IconProps extends SVGProps<SVGSVGElement> {
   name: IconName;
@@ -34,6 +35,16 @@ const paths: Record<IconName, React.ReactElement> = {
   users: <path d="M16 11a4 4 0 1 0-4-4 4 4 0 0 0 4 4zm-8 0a4 4 0 1 0-4-4 4 4 0 0 0 4 4zm0 2c-2.7 0-8 1.34-8 4v3h10v-3c0-.99.76-1.86 1.96-2.5A14 14 0 0 0 8 13zm8 0c-.34 0-.72.02-1.13.06A4.9 4.9 0 0 1 18 17v3h6v-3c0-2.66-5.3-4-8-4z" />,
   plus: <path d="M11 5h2v6h6v2h-6v6h-2v-6H5v-2h6z" />,
   chevron: <path d="M7 10l5 5 5-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />,
+  cart: <path d="M7 18a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm10 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zM7.2 14.6h10.5a1 1 0 0 0 .97-.76l1.8-7A1 1 0 0 0 19.5 5.7H6.1l-.38-1.7A1 1 0 0 0 4.76 3H2v2h1.9l2.4 10.8a2 2 0 0 0 1.9 1.5h10.9v-2H8.4a.4.4 0 0 1-.4-.4v-.3z" />,
+  close: <path d="M6.4 5 5 6.4l5.6 5.6L5 17.6 6.4 19l5.6-5.6 5.6 5.6 1.4-1.4-5.6-5.6L19 6.4 17.6 5 12 10.6z" />,
+  minus: <path d="M5 11h14v2H5z" />,
+  trash: <path d="M9 3v1H4v2h16V4h-5V3H9zm-1.2 5h2l.4 12h3.6l.4-12h2l-.4 14H8.2L7.8 8z" />,
+  edit: <path d="M3 17.25V21h3.75L17.8 9.94l-3.75-3.75L3 17.25zM20.7 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" />,
+  search: <path d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 1 0-.7.7l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0a4.5 4.5 0 1 1 0-9 4.5 4.5 0 0 1 0 9z" />,
+  image: <path d="M21 19V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2zM8.5 11.5l2.5 3 3.5-4.5 4.5 6H5l3.5-4.5z" />,
+  logout: <path d="M16 13v-2H8V9h8V7l4 5-4 5v-2h-8v-2h8zM4 3h7v2H4v14h7v2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z" />,
+  package: <path d="M21 8.5v8a2 2 0 0 1-1 1.73l-7 4a2 2 0 0 1-2 0l-7-4A2 2 0 0 1 3 16.5v-8a2 2 0 0 1 1-1.73l7-4a2 2 0 0 1 2 0l7 4A2 2 0 0 1 21 8.5zM12 3 5 6.5l2.5 1.43 7-4L12 3zM12 11.5 5 8l7 4 7-4-7 3.5zm0 2 7-4v6.4l-7 4v-6.4z" />,
+  tag: <path d="m21.4 11.6-9-9A2 2 0 0 0 11 2H4a2 2 0 0 0-2 2v7a2 2 0 0 0 .6 1.4l9 9a2 2 0 0 0 2.8 0l7-7a2 2 0 0 0 0-2.8zM6.5 8A1.5 1.5 0 1 1 8 6.5 1.5 1.5 0 0 1 6.5 8z" />,
 };
 
 export default function Icon({ name, ...p }: IconProps) {
