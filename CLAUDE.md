@@ -8,7 +8,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 npm run dev         # Start dev server (Next.js, port 3000)
 npm run build       # Production build
 npm run lint        # ESLint via next lint (flat config: eslint.config.mjs)
-npm run db:migrate  # Prisma migrations (creates/updates prisma/dev.db)
+npm run db:migrate  # Prisma migrations (applies to the Postgres/Supabase database)
 npm run db:seed     # Seed: categories, products (prisma/seed-data.json), admin user
 npm run db:studio   # Prisma Studio (visual DB editor)
 node scripts/extract-catalog.mjs  # Regenera prisma/seed-data.json desde datos del catálogo viejo
@@ -32,7 +32,7 @@ Next.js 15 (App Router) site for **Top Gun Club SRL** — an indoor shooting ran
   - `orders` — público: registra un pedido cuando el carrito confirma por WhatsApp.
 - `components/store/` — tienda virtual: `CartContext` (localStorage), `StorePage` (filtros/búsqueda), `ProductModal`, `CartDrawer` (checkout WhatsApp), `CartFab`.
 - `components/admin/` — panel: `AdminPanel` (login + tabs), `ProductManager`, `CategoryManager`, `OrdersManager`.
-- `prisma/` — `schema.prisma` (SQLite: AdminUser, Category, Product, ProductImage, Order, OrderItem), `migrations/`, `seed.mjs` + `seed-data.json`.
+- `prisma/` — `schema.prisma` (Postgres/Supabase: AdminUser, Category, Product, ProductImage, Order, OrderItem), `migrations/`, `seed.mjs` + `seed-data.json`.
 - `lib/` — `site.ts` (contacto + NAV_ITEMS), `db.ts` (Prisma singleton), `auth.ts` (HMAC sesión, bcrypt), `session.ts` (cookies → usuario), `server-dto.ts` (mapeo Prisma→DTO), `validators.ts` (zod), `store-types.ts` (tipos compartidos), `cloudinary-upload.ts` (upload server-side).
 - `hooks/` — `useReveal.ts` drives the scroll-reveal animation system.
 
@@ -41,7 +41,7 @@ Next.js 15 (App Router) site for **Top Gun Club SRL** — an indoor shooting ran
 - `/tienda` is a server component with `export const dynamic = 'force-dynamic'` that reads Prisma directly and passes DTOs to the client.
 - Products: `kind = "arma"` (brand/caliber/firearmType columns + `specsJson` for extra specs like Velocidad/Tanque) or `"producto"` (title/description/price/images).
 - Prices are `Decimal` in Prisma; DTOs convert with `Number()` (`lib/server-dto.ts`).
-- Orders get a sequential `number` assigned inside a transaction (SQLite has no autoincrement on non-id fields); unique-conflict retries up to 3 times.
+- Orders get a sequential `number` assigned inside a transaction (computed as max+1, not a DB serial column); unique-conflict retries up to 3 times.
 - The cart lives in the client (`localStorage`, key `tgc_cart_v1`). Checkout POSTs to `/api/orders` and opens WhatsApp with the order text via `waLink()` (`lib/site.ts`). If the POST fails (offline), WhatsApp still opens — the sale is never lost.
 - Admin APIs validate with zod (`lib/validators.ts`) and require the session cookie; every write endpoint re-checks auth server-side.
 
@@ -55,9 +55,13 @@ Next.js 15 (App Router) site for **Top Gun Club SRL** — an indoor shooting ran
 
 Admin uploads go to Cloudinary folder `tienda` through `POST /api/admin/upload` (validates type/size: JPG/PNG/WEBP/GIF/AVIF, ≤10 MB). Product deletes best-effort clean the Cloudinary assets (`cloudinary.api.delete_resources`). `lib/cloudinary-upload.ts` has `uploadImageBuffer()`; `next.config.ts` allowlists `res.cloudinary.com`.
 
+### Database (Supabase Postgres)
+
+The store's data lives in **Supabase Postgres**, accessed exclusively through **Prisma** (`lib/db.ts`) — not through the Supabase JS client. `schema.prisma`'s datasource has two URLs: `url` (`DATABASE_URL`, pooled via PgBouncer, port 6543, `?pgbouncer=true` — used at runtime) and `directUrl` (`DIRECT_URL`, direct connection, port 5432 — used only by Prisma for migrations). Both point at the same Supabase project; keep them in sync between `.env` (Prisma CLI) and `.env.local` (Next.js).
+
 ### Legacy experiment (leave alone)
 
-`lib/supabase/`, `middleware.ts` (root), `app/test-supabase/` are an unfinished Supabase experiment from a previous session. The root middleware wraps every request (harmless no-op). Don't extend it; the store uses Prisma + SQLite + custom auth instead.
+`lib/supabase/`, `middleware.ts` (root), `app/test-supabase/` are an unfinished experiment from a previous session using the **Supabase JS client** (auth/SSR) directly — a different, unused path from the Prisma-based store above. The root middleware wraps every request (harmless no-op). Don't extend it; the store uses Prisma + Postgres + custom HMAC auth instead.
 
 ### Language
 
@@ -77,10 +81,11 @@ Pure CSS in `globals.css` using CSS custom properties. Design tokens are defined
 NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=
 NEXT_PUBLIC_CLOUDINARY_API_KEY=
 CLOUDINARY_API_SECRET=
-DATABASE_URL="file:./dev.db"     # Prisma (CLI reads .env; Next reads .env + .env.local)
+DATABASE_URL=       # Postgres pooled (Supabase, port 6543, ?pgbouncer=true) — runtime
+DIRECT_URL=          # Postgres direct (Supabase, port 5432) — Prisma migrations only
 SESSION_SECRET=                   # firma de sesiones admin (obligatorio en producción)
 ADMIN_EMAIL=                      # seed: admin inicial (default admin@topgunclub.bo)
 ADMIN_PASSWORD=                   # seed: contraseña admin inicial (default TopgunClub2026!)
 ```
 
-Create `.env.local` (and `.env` for Prisma CLI) with these values for local development. See `.env.example`.
+Create `.env.local` (Next.js) and `.env` (Prisma CLI) with these values — both are gitignored, keep `DATABASE_URL`/`DIRECT_URL` identical in each. Get the connection strings from the Supabase dashboard: project → **Connect** button → ORMs → Prisma. See `.env.example`.

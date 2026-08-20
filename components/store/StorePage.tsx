@@ -6,12 +6,10 @@ import type { CategoryDTO, ProductDTO } from '@/lib/store-types';
 import Icon from '@/components/Icon';
 import StoreProductCard from './StoreProductCard';
 import ProductModal from './ProductModal';
-import CartDrawer from './CartDrawer';
-import CartFab from './CartFab';
-import { CartProvider } from './CartContext';
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Tienda virtual: filtros por categoría, búsqueda, grilla, detalle y carrito
+// Tienda virtual: filtros por categoría, búsqueda, grilla y detalle.
+// El carrito (provider, drawer y botón) es global — ver app/layout.tsx y Navbar.
 // ─────────────────────────────────────────────────────────────────────────────
 
 interface Props {
@@ -19,14 +17,27 @@ interface Props {
   categories: CategoryDTO[];
 }
 
-function StoreContent({ products, categories }: Props) {
+// "Armas de Fuego" → Armas de <em>Fuego</em>. Reproduce el tratamiento de
+// título del catálogo: la última palabra va destacada. Si es una sola
+// palabra ("PCP"), se destaca entera.
+function splitTitle(name: string) {
+  const words = name.trim().split(/\s+/);
+  if (words.length === 1) return <em>{words[0]}</em>;
+  const last = words.pop()!;
+  return (
+    <>
+      {words.join(' ')} <em>{last}</em>
+    </>
+  );
+}
+
+export default function StorePage({ products, categories }: Props) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const activeCat = searchParams.get('cat') ?? 'todos';
 
   const [query, setQuery] = useState('');
   const [selected, setSelected] = useState<ProductDTO | null>(null);
-  const [cartOpen, setCartOpen] = useState(false);
 
   const selectCategory = useCallback(
     (slug: string) => {
@@ -62,6 +73,23 @@ function StoreContent({ products, categories }: Props) {
   const activeCategoryName =
     activeCat !== 'todos' ? categories.find((c) => c.slug === activeCat)?.name : 'Todos los productos';
 
+  // El catálogo siempre se muestra agrupado por categoría, con su título:
+  // en "Todos" salen varios bloques y al filtrar queda uno solo, pero
+  // encabezado incluido. Se agrupa desde los propios productos (así nunca se
+  // pierde ninguno) y los bloques respetan el orden definido en el panel.
+  const grouped = useMemo(() => {
+    const map = new Map<string, { name: string; slug: string; items: ProductDTO[] }>();
+    filtered.forEach((p) => {
+      const key = p.category.slug;
+      if (!map.has(key)) map.set(key, { name: p.category.name, slug: key, items: [] });
+      map.get(key)!.items.push(p);
+    });
+    const order = new Map(categories.map((c, i) => [c.slug, i]));
+    return [...map.values()].sort(
+      (a, b) => (order.get(a.slug) ?? 999) - (order.get(b.slug) ?? 999)
+    );
+  }, [filtered, categories]);
+
   return (
     <>
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
@@ -73,11 +101,11 @@ function StoreContent({ products, categories }: Props) {
             <Link href="/">Inicio</Link> <span>/</span> <b>Tienda</b>
           </div>
           <h1 className="display">
-            TIENDA <span className="hl">TÁCTICA</span>
+            TIENDA <span className="hl">TOP GUN</span>
           </h1>
           <p className="lead">
-            Armas de fuego, rifles PCP y equipamiento. Agregá al carrito y pedí por WhatsApp: te
-            confirmamos stock y entrega al instante.
+            Equipamiento, accesorios y todo lo que necesitás. Agregá al carrito y
+            pide tus productos por WhatsApp: te confirmamos stock y coordinamos la entrega.
           </p>
         </div>
       </section>
@@ -85,6 +113,7 @@ function StoreContent({ products, categories }: Props) {
       {/* ── Filtros ──────────────────────────────────────────────────────── */}
       <section className="section section--tight">
         <div className="container">
+
           <div className="store-toolbar">
             <div className="store-chips" role="tablist" aria-label="Categorías">
               <button
@@ -122,9 +151,13 @@ function StoreContent({ products, categories }: Props) {
             </label>
           </div>
 
-          <p className="store-count">
-            <b>{filtered.length}</b> producto{filtered.length !== 1 ? 's' : ''} · {activeCategoryName}
-          </p>
+          {/* Total general: solo en "Todos", donde resume varias secciones.
+              Al filtrar por una categoría, su propio encabezado ya lo dice. */}
+          {activeCat === 'todos' && filtered.length > 0 && (
+            <p className="store-count">
+              <b>{filtered.length}</b> producto{filtered.length !== 1 ? 's' : ''} · {activeCategoryName}
+            </p>
+          )}
 
           {filtered.length === 0 ? (
             <div className="store-empty">
@@ -142,11 +175,23 @@ function StoreContent({ products, categories }: Props) {
               </button>
             </div>
           ) : (
-            <div className="store-grid">
-              {filtered.map((p) => (
-                <StoreProductCard key={p.id} product={p} onOpen={setSelected} />
-              ))}
-            </div>
+            grouped.map((g) => (
+              <section key={g.slug} className="store-section">
+                {/* Mismo encabezado centrado que usaba el catálogo: eyebrow +
+                    título con la última palabra destacada en <em>. */}
+                <div className="shead center">
+                  <span className="eyebrow eyebrow--center">
+                    {g.items.length} {g.items.length === 1 ? 'artículo' : 'artículos'}
+                  </span>
+                  <h2 className="section-title store-section__title">{splitTitle(g.name)}</h2>
+                </div>
+                <div className="store-grid">
+                  {g.items.map((p) => (
+                    <StoreProductCard key={p.id} product={p} onOpen={setSelected} />
+                  ))}
+                </div>
+              </section>
+            ))
           )}
 
           <div className="store-note" style={{ marginTop: 48 }}>
@@ -161,16 +206,6 @@ function StoreContent({ products, categories }: Props) {
       </section>
 
       {selected && <ProductModal product={selected} onClose={() => setSelected(null)} />}
-      <CartDrawer open={cartOpen} onClose={() => setCartOpen(false)} />
-      <CartFab onOpen={() => setCartOpen(true)} />
     </>
-  );
-}
-
-export default function StorePage(props: Props) {
-  return (
-    <CartProvider>
-      <StoreContent {...props} />
-    </CartProvider>
   );
 }

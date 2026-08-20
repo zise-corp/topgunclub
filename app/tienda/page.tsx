@@ -4,6 +4,7 @@ import { toCategoryDTO, toProductDTO } from '@/lib/server-dto';
 import StorePage from '@/components/store/StorePage';
 import RevealObserver from '@/components/RevealObserver';
 import BreadcrumbJsonLd from '@/components/BreadcrumbJsonLd';
+import CatalogoIntroClient from '@/components/CatalogoIntroClient';
 
 export const dynamic = 'force-dynamic';
 
@@ -58,6 +59,7 @@ export default async function TiendaPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <BreadcrumbJsonLd name="Tienda" path="/tienda" />
+      <CatalogoIntroClient />
       <RevealObserver />
       <StorePage
         products={products.map(toProductDTO)}

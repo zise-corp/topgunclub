@@ -4,7 +4,8 @@ export type IconName =
   | 'whatsapp' | 'phone' | 'pin' | 'clock' | 'arrow' | 'up' | 'check'
   | 'shield' | 'target' | 'star' | 'facebook' | 'instagram' | 'tiktok'
   | 'food' | 'calendar' | 'users' | 'plus' | 'chevron'
-  | 'cart' | 'close' | 'minus' | 'trash' | 'edit' | 'search' | 'image' | 'logout' | 'package' | 'tag';
+  | 'cart' | 'close' | 'minus' | 'trash' | 'edit' | 'search' | 'image' | 'logout' | 'package' | 'tag'
+  | 'chart';
 
 interface IconProps extends SVGProps<SVGSVGElement> {
   name: IconName;
@@ -45,6 +46,7 @@ const paths: Record<IconName, React.ReactElement> = {
   logout: <path d="M16 13v-2H8V9h8V7l4 5-4 5v-2h-8v-2h8zM4 3h7v2H4v14h7v2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z" />,
   package: <path d="M21 8.5v8a2 2 0 0 1-1 1.73l-7 4a2 2 0 0 1-2 0l-7-4A2 2 0 0 1 3 16.5v-8a2 2 0 0 1 1-1.73l7-4a2 2 0 0 1 2 0l7 4A2 2 0 0 1 21 8.5zM12 3 5 6.5l2.5 1.43 7-4L12 3zM12 11.5 5 8l7 4 7-4-7 3.5zm0 2 7-4v6.4l-7 4v-6.4z" />,
   tag: <path d="m21.4 11.6-9-9A2 2 0 0 0 11 2H4a2 2 0 0 0-2 2v7a2 2 0 0 0 .6 1.4l9 9a2 2 0 0 0 2.8 0l7-7a2 2 0 0 0 0-2.8zM6.5 8A1.5 1.5 0 1 1 8 6.5 1.5 1.5 0 0 1 6.5 8z" />,
+  chart: <path d="M4 20h16v2H2V2h2v18zM7 17H5v-6h2v6zm4 0H9V7h2v10zm4 0h-2v-8h2v8zm4 0h-2V4h2v13z" />,
 };
 
 export default function Icon({ name, ...p }: IconProps) {

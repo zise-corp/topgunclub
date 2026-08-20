@@ -1,4 +1,5 @@
 'use client';
+import { memo } from 'react';
 import Image from 'next/image';
 import { formatPrice } from '@/lib/store-types';
 import type { ProductDTO } from '@/lib/store-types';
@@ -14,7 +15,7 @@ interface Props {
   onOpen: (product: ProductDTO) => void;
 }
 
-export default function StoreProductCard({ product, onOpen }: Props) {
+function StoreProductCard({ product, onOpen }: Props) {
   const { add } = useCart();
   const image = product.images[0];
 
@@ -25,8 +26,13 @@ export default function StoreProductCard({ product, onOpen }: Props) {
     if (product.firearmType) specChips.push({ label: 'Tipo', value: product.firearmType });
   }
 
+  // Sin la clase `reveal`: esa animación arranca en opacity:0 y depende de un
+  // IntersectionObserver que solo observa los elementos existentes al montar la
+  // página. Al filtrar por categoría se creaban tarjetas nuevas que nadie
+  // observaba y quedaban invisibles para siempre (la grilla se veía negra).
+  // Ahora la entrada es puro CSS y siempre se reproduce.
   return (
-    <article className="store-card reveal">
+    <article className="store-card">
       <button
         type="button"
         className="store-card__img"
@@ -90,3 +96,5 @@ export default function StoreProductCard({ product, onOpen }: Props) {
     </article>
   );
 }
+
+export default memo(StoreProductCard);

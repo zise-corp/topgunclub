@@ -61,7 +61,7 @@ export default function ProductModal({ product, onClose }: Props) {
   }) — ${formatPrice(product.price, product.currency)}.\n${window.location.origin}/tienda`;
 
   return (
-    <div className="store-modal" role="dialog" aria-modal="true" aria-label={product.name}>
+    <div className="store-modal" role="dialog" aria-modal="true" aria-label={product.name} data-native-cursor>
       <button type="button" className="store-modal__backdrop" onClick={onClose} aria-label="Cerrar" />
       <div className="store-modal__panel">
         <button type="button" className="store-modal__close" onClick={onClose} aria-label="Cerrar detalle">

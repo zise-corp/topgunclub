@@ -1,22 +1,33 @@
 'use client';
 import { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
-import Icon from '@/components/Icon';
+import Image from 'next/image';
+import Icon, { type IconName } from '@/components/Icon';
+import DashboardView from './DashboardView';
 import ProductManager from './ProductManager';
 import CategoryManager from './CategoryManager';
 import OrdersManager from './OrdersManager';
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Panel de administración: login + pestañas (Productos, Categorías, Pedidos)
+// Panel de administración: login + layout con navegación lateral.
+// Vistas: Resumen, Productos, Categorías, Pedidos.
 // ─────────────────────────────────────────────────────────────────────────────
 
 type User = { id: string; email: string; name: string; role: string };
-type View = 'productos' | 'categorias' | 'pedidos';
+type View = 'resumen' | 'productos' | 'categorias' | 'pedidos';
+
+const NAV: { id: View; label: string; icon: IconName; hint: string }[] = [
+  { id: 'resumen', label: 'Resumen', icon: 'chart', hint: 'Métricas y últimos pedidos' },
+  { id: 'productos', label: 'Productos', icon: 'package', hint: 'Catálogo de la tienda' },
+  { id: 'categorias', label: 'Categorías', icon: 'tag', hint: 'Agrupación de productos' },
+  { id: 'pedidos', label: 'Pedidos', icon: 'cart', hint: 'Ventas por WhatsApp' },
+];
 
 export default function AdminPanel() {
   const [status, setStatus] = useState<'loading' | 'anon' | 'auth'>('loading');
   const [user, setUser] = useState<User | null>(null);
-  const [view, setView] = useState<View>('productos');
+  const [view, setView] = useState<View>('resumen');
+  const [navOpen, setNavOpen] = useState(false);
 
   const checkSession = useCallback(async () => {
     try {
@@ -43,72 +54,119 @@ export default function AdminPanel() {
     setStatus('anon');
   };
 
+  const go = (v: View) => {
+    setView(v);
+    setNavOpen(false);
+  };
+
   if (status === 'loading') {
     return (
       <main className="admin">
-        <div className="container" style={{ display: 'flex', justifyContent: 'center', padding: '120px 0' }}>
-          <p className="admin-loading">Cargando panel…</p>
+        <div className="admin-boot">
+          <span className="admin-boot__spin" aria-hidden />
+          <p>Cargando panel…</p>
         </div>
       </main>
     );
   }
 
-  if (status === 'anon') {
-    return <AdminLogin onLogin={checkSession} />;
-  }
+  if (status === 'anon') return <AdminLogin onLogin={checkSession} />;
 
-  const tabs: { id: View; label: string; icon: 'package' | 'tag' | 'cart' }[] = [
-    { id: 'productos', label: 'Productos', icon: 'package' },
-    { id: 'categorias', label: 'Categorías', icon: 'tag' },
-    { id: 'pedidos', label: 'Pedidos', icon: 'cart' },
-  ];
+  const current = NAV.find((n) => n.id === view)!;
+  const initials = (user?.name ?? 'A')
+    .split(' ')
+    .slice(0, 2)
+    .map((w) => w[0])
+    .join('')
+    .toUpperCase();
 
   return (
-    <main className="admin">
-      <section className="admin-head grain">
-        <div className="container">
-          <div className="admin-head__row">
-            <div>
-              <span className="eyebrow">Panel de administración</span>
-              <h1 className="display" style={{ fontSize: '2.2rem' }}>
-                TIENDA <span className="hl">· ADMIN</span>
-              </h1>
-            </div>
-            <div className="admin-head__user">
-              <span>
-                {user?.name} <small>{user?.email}</small>
-              </span>
-              <button type="button" className="btn btn--ghost" onClick={handleLogout}>
-                <Icon name="logout" style={{ width: 15, height: 15 }} /> Salir
-              </button>
-            </div>
-          </div>
-          <nav className="admin-tabs" aria-label="Secciones">
-            {tabs.map((t) => (
-              <button
-                key={t.id}
-                type="button"
-                className={'admin-tab' + (view === t.id ? ' active' : '')}
-                onClick={() => setView(t.id)}
-              >
-                <Icon name={t.icon} style={{ width: 16, height: 16 }} />
-                {t.label}
-              </button>
-            ))}
-            <Link href="/tienda" className="admin-tab admin-tab--link">
-              Ver tienda →
-            </Link>
-          </nav>
+    <main className="admin admin--shell">
+      {/* ── Barra lateral ─────────────────────────────────────────────── */}
+      <aside className={'admin-side' + (navOpen ? ' open' : '')}>
+        <div className="admin-side__brand">
+          <Image
+            src="/images/logoTopGunClub.png"
+            alt="Top Gun Club"
+            width={1536}
+            height={1024}
+            style={{ width: 'auto', height: 34 }}
+          />
+          <span>Panel</span>
         </div>
-      </section>
 
-      <section className="admin-body">
-        <div className="container">
+        <nav className="admin-side__nav" aria-label="Secciones del panel">
+          {NAV.map((n) => (
+            <button
+              key={n.id}
+              type="button"
+              className={'admin-navbtn' + (view === n.id ? ' active' : '')}
+              onClick={() => go(n.id)}
+              aria-current={view === n.id ? 'page' : undefined}
+            >
+              <Icon name={n.icon} style={{ width: 18, height: 18 }} />
+              <span className="admin-navbtn__text">
+                <b>{n.label}</b>
+                <small>{n.hint}</small>
+              </span>
+            </button>
+          ))}
+        </nav>
+
+        <div className="admin-side__foot">
+          <div className="admin-side__links">
+            <Link href="/" className="admin-side__store">
+              <Icon name="up" style={{ width: 15, height: 15, transform: 'rotate(-90deg)' }} /> Volver al sitio
+            </Link>
+            <Link href="/tienda" className="admin-side__store">
+              <Icon name="cart" style={{ width: 15, height: 15 }} /> Ver la tienda
+            </Link>
+          </div>
+          <div className="admin-side__user">
+            <span className="admin-avatar" aria-hidden>{initials}</span>
+            <span className="admin-side__id">
+              <b>{user?.name}</b>
+              <small>{user?.email}</small>
+            </span>
+          </div>
+          <button type="button" className="admin-side__logout" onClick={handleLogout}>
+            <Icon name="logout" style={{ width: 15, height: 15 }} /> Cerrar sesión
+          </button>
+        </div>
+      </aside>
+
+      {/* Fondo oscuro detrás del menú lateral en móvil */}
+      {navOpen && <div className="admin-side__scrim" onClick={() => setNavOpen(false)} aria-hidden />}
+
+      {/* ── Contenido ─────────────────────────────────────────────────── */}
+      <div className="admin-main">
+        <header className="admin-topbar">
+          <button
+            type="button"
+            className="admin-topbar__burger"
+            onClick={() => setNavOpen((o) => !o)}
+            aria-label="Abrir menú del panel"
+          >
+            <span /><span /><span />
+          </button>
+          <div className="admin-topbar__title">
+            <span className="eyebrow">Panel de administración</span>
+            <h1>{current.label}</h1>
+          </div>
+          <Link href="/" className="admin-topbar__store" aria-label="Volver al sitio">
+            <Icon name="up" style={{ width: 18, height: 18, transform: 'rotate(-90deg)' }} />
+          </Link>
+        </header>
+
+        <div className="admin-content">
+          {view === 'resumen' && (
+            <DashboardView onGoToOrders={() => go('pedidos')} onGoToProducts={() => go('productos')} />
+          )}
           {view === 'productos' && <ProductManager />}
           {view === 'categorias' && <CategoryManager />}
           {view === 'pedidos' && <OrdersManager />}
         </div>
-      </section>
+      </div>
     </main>
   );
 }
@@ -146,11 +204,24 @@ function AdminLogin({ onLogin }: { onLogin: () => void }) {
     <main className="admin">
       <section className="admin-login">
         <form className="admin-login__card" onSubmit={submit}>
+          {/* Esquinas tácticas — mismo motivo que el detalle de producto */}
+          <span className="admin-login__corner tl" aria-hidden />
+          <span className="admin-login__corner tr" aria-hidden />
+          <span className="admin-login__corner bl" aria-hidden />
+          <span className="admin-login__corner br" aria-hidden />
+
           <div className="admin-login__logo">
-            <Icon name="shield" style={{ width: 34, height: 34 }} />
+            <Image
+              src="/images/logoTopGunClub.png"
+              alt="Top Gun Club"
+              width={1536}
+              height={1024}
+              style={{ width: 'auto', height: 44 }}
+              priority
+            />
           </div>
           <h1>Acceso administrador</h1>
-          <p>Ingresá para gestionar la tienda: productos, categorías y pedidos.</p>
+          <p>Gestión de la tienda: productos, categorías y pedidos.</p>
 
           <label className="field">
             <span>Email</span>

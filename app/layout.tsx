@@ -1,10 +1,9 @@
 import type { Metadata, Viewport } from 'next';
 import { Barlow, Barlow_Condensed } from 'next/font/google';
 import './globals.css';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
-import FloatingActions from '@/components/FloatingActions';
+import { SiteHeader, SiteFooter } from '@/components/SiteChrome';
 import TacticalCursor from '@/components/TacticalCursor';
+import { CartProvider } from '@/components/store/CartContext';
 
 const barlow = Barlow({
   variable: '--font-barlow',
@@ -106,39 +105,18 @@ export const metadata: Metadata = {
     },
   },
   // ✅ CORREGIDO: FAVICONS LOCALES (como ZISE)
+  // Juego de íconos generado desde el logo (escudo central sobre el fondo
+  // oscuro de la marca). El logo completo es 2.3:1 y, encajado en un cuadrado,
+  // quedaba ilegible a 16-32px; el escudo se reconoce bien a ese tamaño.
+  // favicon.ico lleva entradas BMP 16/32/48 por compatibilidad máxima.
   icons: {
     icon: [
-      {
-        url: '/favicon.ico',
-        sizes: 'any',
-      },
-      {
-        url: '/icon-48x48.png',
-        sizes: '48x48',
-        type: 'image/png',
-      },
-      {
-        url: '/icon-96x96.png',
-        sizes: '96x96',
-        type: 'image/png',
-      },
-      {
-        url: '/icon-144x144.png',
-        sizes: '144x144',
-        type: 'image/png',
-      },
-      {
-        url: '/icon-192x192.png',
-        sizes: '192x192',
-        type: 'image/png',
-      },
+      { url: '/favicon.ico', sizes: 'any' },
+      { url: '/favicon-96x96.png', sizes: '96x96', type: 'image/png' },
+      { url: '/favicon-192x192.png', sizes: '192x192', type: 'image/png' },
+      { url: '/favicon-512x512.png', sizes: '512x512', type: 'image/png' },
     ],
-    apple: [
-      {
-        url: '/apple-touch-icon.png',
-        sizes: '180x180',
-      },
-    ],
+    apple: [{ url: '/apple-touch-icon.png', sizes: '180x180' }],
   },
   openGraph: {
     locale: 'es_BO',
@@ -173,10 +151,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body>
-        <Navbar />
-        {children}
-        <Footer />
-        <FloatingActions />
+        <CartProvider>
+          <SiteHeader />
+          {children}
+          <SiteFooter />
+        </CartProvider>
         <TacticalCursor />
       </body>
     </html>

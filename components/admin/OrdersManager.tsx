@@ -1,26 +1,20 @@
 'use client';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { OrderDTO } from '@/lib/store-types';
 import { formatPrice } from '@/lib/store-types';
+import Icon from '@/components/Icon';
+import { STATUS_LABELS, STATUS_ORDER } from './order-status';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Gestión de pedidos: listado de pedidos (ventas por WhatsApp) y cambio de estado
 // ─────────────────────────────────────────────────────────────────────────────
-
-const STATUS_LABELS: Record<string, string> = {
-  recibido: 'Recibido',
-  en_proceso: 'En proceso',
-  completado: 'Completado',
-  cancelado: 'Cancelado',
-};
-
-const STATUS_ORDER = ['recibido', 'en_proceso', 'completado', 'cancelado'];
 
 export default function OrdersManager() {
   const [orders, setOrders] = useState<OrderDTO[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [filter, setFilter] = useState<string>('todos');
+  const [query, setQuery] = useState('');
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -59,10 +53,23 @@ export default function OrdersManager() {
     }
   };
 
-  const filtered = filter === 'todos' ? orders : orders.filter((o) => o.status === filter);
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    return orders.filter((o) => {
+      if (filter !== 'todos' && o.status !== filter) return false;
+      if (!q) return true;
+      return (
+        String(o.number).includes(q) ||
+        (o.customer ?? '').toLowerCase().includes(q) ||
+        (o.phone ?? '').toLowerCase().includes(q) ||
+        (o.region ?? '').toLowerCase().includes(q) ||
+        o.items.some((it) => it.name.toLowerCase().includes(q))
+      );
+    });
+  }, [orders, filter, query]);
 
   if (loading && orders.length === 0) {
-    return <p className="admin-loading">Cargando pedidos…</p>;
+    return <div className="admin-skeleton-grid">{[0, 1, 2].map((i) => <div key={i} className="admin-skeleton" />)}</div>;
   }
 
   return (
@@ -75,6 +82,19 @@ export default function OrdersManager() {
       </div>
 
       {error && <p className="admin-error">{error}</p>}
+
+      {orders.length > 0 && (
+        <label className="admin-search admin-search--wide">
+          <Icon name="search" style={{ width: 16, height: 16 }} />
+          <input
+            type="search"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Buscar por N°, cliente, teléfono o producto…"
+            aria-label="Buscar pedidos"
+          />
+        </label>
+      )}
 
       <div className="admin-chips">
         <button
@@ -100,31 +120,41 @@ export default function OrdersManager() {
       </div>
 
       {filtered.length === 0 ? (
-        <p className="admin-empty">No hay pedidos {filter !== 'todos' ? `con estado "${STATUS_LABELS[filter]}"` : ''}.</p>
+        <div className="admin-empty">
+          <Icon name="cart" style={{ width: 34, height: 34, opacity: 0.35 }} />
+          <p>
+            {orders.length === 0
+              ? 'Todavía no hay pedidos. Aparecerán acá cuando alguien compre en la tienda.'
+              : 'Ningún pedido coincide con la búsqueda.'}
+          </p>
+          {orders.length > 0 && (
+            <button type="button" className="btn btn--ghost" onClick={() => { setQuery(''); setFilter('todos'); }}>
+              Limpiar filtros
+            </button>
+          )}
+        </div>
       ) : (
         <div className="admin-orders">
           {filtered.map((o) => (
             <article key={o.id} className="admin-order">
               <header className="admin-order__head">
-                <div>
-                  <b>Pedido #{o.number}</b>
-                  <small>
-                    {new Date(o.createdAt).toLocaleString('es-BO', {
-                      dateStyle: 'medium',
-                      timeStyle: 'short',
-                    })}
-                  </small>
+                <div className="admin-order__id">
+                  <span className="admin-order__num">#{o.number}</span>
+                  <span>
+                    <b>{o.customer ?? 'Sin nombre'}</b>
+                    <small>
+                      {new Date(o.createdAt).toLocaleString('es-BO', { dateStyle: 'medium', timeStyle: 'short' })}
+                    </small>
+                  </span>
                 </div>
                 <select
                   value={o.status}
                   onChange={(e) => changeStatus(o, e.target.value)}
                   className={'admin-status admin-status--' + o.status}
-                  aria-label="Estado del pedido"
+                  aria-label={`Estado del pedido ${o.number}`}
                 >
                   {STATUS_ORDER.map((s) => (
-                    <option key={s} value={s}>
-                      {STATUS_LABELS[s]}
-                    </option>
+                    <option key={s} value={s}>{STATUS_LABELS[s]}</option>
                   ))}
                 </select>
               </header>
@@ -132,20 +162,51 @@ export default function OrdersManager() {
               <div className="admin-order__items">
                 {o.items.map((it) => (
                   <div key={it.id} className="admin-order__item">
-                    <span>{it.name}</span>
-                    <span>
-                      ×{it.qty} · {formatPrice(it.price * it.qty, o.currency)}
-                    </span>
+                    <span>{it.name} <em>×{it.qty}</em></span>
+                    <span>{formatPrice(it.price * it.qty, o.currency)}</span>
                   </div>
                 ))}
               </div>
 
+              {/* Entrega: lo que el repartidor necesita saber */}
+              <div className={'admin-order__delivery' + (o.deliveryMethod === 'delivery' ? ' is-delivery' : '')}>
+                <span className="admin-order__deltitle">
+                  <Icon name={o.deliveryMethod === 'delivery' ? 'pin' : 'package'} style={{ width: 15, height: 15 }} />
+                  {o.deliveryMethod === 'delivery'
+                    ? `Envío a domicilio${o.region ? ` · ${o.region}` : ''}`
+                    : 'Retiro en el local'}
+                </span>
+                {o.deliveryMethod === 'delivery' && (
+                  <dl className="admin-order__facts">
+                    {o.address && (<><dt>Dirección</dt><dd>{o.address}</dd></>)}
+                    {o.ci && (<><dt>CI</dt><dd>{o.ci}</dd></>)}
+                    {o.email && (<><dt>Correo</dt><dd>{o.email}</dd></>)}
+                    {o.locationMapsUrl && (
+                      <><dt>Ubicación</dt>
+                        <dd>
+                          <a href={o.locationMapsUrl} target="_blank" rel="noopener noreferrer">
+                            Abrir en el mapa →
+                          </a>
+                        </dd>
+                      </>
+                    )}
+                  </dl>
+                )}
+              </div>
+
+              {o.note && <p className="admin-order__note">{o.note}</p>}
+
               <footer className="admin-order__foot">
-                <div>
-                  {o.customer && <p>👤 {o.customer}</p>}
-                  {o.phone && <p>📱 {o.phone}</p>}
-                  {o.note && (
-                    <p className="admin-order__note">📝 {o.note}</p>
+                <div className="admin-order__contact">
+                  {o.phone && (
+                    <a
+                      href={`https://api.whatsapp.com/send/?phone=${o.phone.replace(/\D/g, '')}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="admin-order__wa"
+                    >
+                      <Icon name="whatsapp" style={{ width: 15, height: 15 }} /> {o.phone}
+                    </a>
                   )}
                 </div>
                 <b className="admin-order__total">{formatPrice(o.total, o.currency)}</b>

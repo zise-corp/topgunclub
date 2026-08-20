@@ -3,6 +3,7 @@ import type { Order, OrderItem } from '@prisma/client';
 import { prisma } from '@/lib/db';
 import { orderInputSchema } from '@/lib/validators';
 import { toOrderDTO } from '@/lib/server-dto';
+import { isLocalRegion } from '@/lib/delivery';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -57,12 +58,24 @@ export async function POST(req: Request) {
           select: { number: true },
         });
         const number = (last?.number ?? 0) + 1;
+        const isDelivery = data.deliveryMethod === 'delivery';
+        const local = isDelivery && isLocalRegion(data.region);
         return tx.order.create({
           data: {
             number,
             customer: data.customer || null,
             phone: data.phone || null,
             note: data.note || null,
+            deliveryMethod: data.deliveryMethod,
+            // Solo guardamos los datos que corresponden al tipo de entrega
+            // elegido, para no dejar campos huérfanos de un flujo descartado.
+            region: isDelivery ? data.region ?? null : null,
+            address: local ? data.address || null : null,
+            locationLat: local ? data.locationLat ?? null : null,
+            locationLng: local ? data.locationLng ?? null : null,
+            locationMapsUrl: local ? data.locationMapsUrl || null : null,
+            ci: isDelivery && !local ? data.ci || null : null,
+            email: isDelivery && !local ? data.email || null : null,
             total,
             currency: 'USD',
             items: { create: items },

@@ -1,5 +1,5 @@
 'use client';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import Image from 'next/image';
 import type { CategoryDTO, ProductDTO } from '@/lib/store-types';
 import { formatPrice } from '@/lib/store-types';
@@ -31,6 +31,9 @@ export default function ProductManager() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [editing, setEditing] = useState<ProductDTO | 'new' | null>(null);
+  const [query, setQuery] = useState('');
+  const [catFilter, setCatFilter] = useState('todas');
+  const [visFilter, setVisFilter] = useState<'todos' | 'activos' | 'ocultos'>('todos');
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -58,8 +61,25 @@ export default function ProductManager() {
     load();
   }, [load]);
 
+  // Antes de los returns tempranos: los hooks deben ejecutarse siempre.
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    return products.filter((p) => {
+      if (catFilter !== 'todas' && p.categoryId !== catFilter) return false;
+      if (visFilter === 'activos' && !p.active) return false;
+      if (visFilter === 'ocultos' && p.active) return false;
+      if (!q) return true;
+      return (
+        p.name.toLowerCase().includes(q) ||
+        (p.brand ?? '').toLowerCase().includes(q) ||
+        (p.caliber ?? '').toLowerCase().includes(q) ||
+        p.category.name.toLowerCase().includes(q)
+      );
+    });
+  }, [products, query, catFilter, visFilter]);
+
   if (loading && products.length === 0) {
-    return <p className="admin-loading">Cargando productos…</p>;
+    return <div className="admin-skeleton-grid">{[0, 1, 2].map((i) => <div key={i} className="admin-skeleton" />)}</div>;
   }
 
   if (editing) {
@@ -128,10 +148,69 @@ export default function ProductManager() {
 
       {error && <p className="admin-error">{error}</p>}
 
+      {products.length > 0 && (
+        <div className="admin-toolbar">
+          <label className="admin-search">
+            <Icon name="search" style={{ width: 16, height: 16 }} />
+            <input
+              type="search"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Buscar por nombre, marca o calibre…"
+              aria-label="Buscar productos"
+            />
+          </label>
+          <select
+            value={catFilter}
+            onChange={(e) => setCatFilter(e.target.value)}
+            aria-label="Filtrar por categoría"
+            className="admin-select"
+          >
+            <option value="todas">Todas las categorías</option>
+            {categories.map((c) => (
+              <option key={c.id} value={c.id}>{c.name}</option>
+            ))}
+          </select>
+          <div className="admin-chips">
+            {(['todos', 'activos', 'ocultos'] as const).map((v) => (
+              <button
+                key={v}
+                type="button"
+                className={'admin-chip' + (visFilter === v ? ' active' : '')}
+                onClick={() => setVisFilter(v)}
+              >
+                {v === 'todos' ? 'Todos' : v === 'activos' ? 'En tienda' : 'Ocultos'}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
       {products.length === 0 ? (
-        <p className="admin-empty">Todavía no hay productos. Creá el primero.</p>
+        <div className="admin-empty">
+          <Icon name="package" style={{ width: 34, height: 34, opacity: 0.35 }} />
+          <p>Todavía no hay productos.</p>
+          <button type="button" className="btn btn--wa" onClick={() => setEditing('new')}>
+            <Icon name="plus" style={{ width: 15, height: 15 }} /> Crear el primero
+          </button>
+        </div>
+      ) : filtered.length === 0 ? (
+        <div className="admin-empty">
+          <Icon name="search" style={{ width: 34, height: 34, opacity: 0.35 }} />
+          <p>Ningún producto coincide con esos filtros.</p>
+          <button
+            type="button"
+            className="btn btn--ghost"
+            onClick={() => { setQuery(''); setCatFilter('todas'); setVisFilter('todos'); }}
+          >
+            Limpiar filtros
+          </button>
+        </div>
       ) : (
         <div className="admin-table-wrap">
+          <p className="admin-count">
+            Mostrando <b>{filtered.length}</b> de {products.length}
+          </p>
           <table className="admin-table">
             <thead>
               <tr>
@@ -144,9 +223,9 @@ export default function ProductManager() {
               </tr>
             </thead>
             <tbody>
-              {products.map((p) => (
+              {filtered.map((p) => (
                 <tr key={p.id}>
-                  <td>
+                  <td data-label="Producto">
                     <div className="admin-prod">
                       <span className="admin-prod__thumb">
                         {p.images[0] ? (
@@ -164,9 +243,11 @@ export default function ProductManager() {
                       </span>
                     </div>
                   </td>
-                  <td>{p.category.name}</td>
-                  <td className="admin-price">{formatPrice(p.price, p.currency)}</td>
-                  <td>
+                  <td data-label="Categoría">
+                    <span className="admin-tagpill">{p.category.name}</span>
+                  </td>
+                  <td className="admin-price" data-label="Precio">{formatPrice(p.price, p.currency)}</td>
+                  <td data-label="En tienda">
                     <button
                       type="button"
                       className={'admin-toggle' + (p.active ? ' on' : '')}
@@ -176,7 +257,7 @@ export default function ProductManager() {
                       <span />
                     </button>
                   </td>
-                  <td>
+                  <td data-label="Destacado">
                     <button
                       type="button"
                       className={'admin-star' + (p.featured ? ' on' : '')}
@@ -186,12 +267,12 @@ export default function ProductManager() {
                       <Icon name="star" style={{ width: 17, height: 17 }} />
                     </button>
                   </td>
-                  <td>
+                  <td data-label="Acciones">
                     <div className="admin-row-actions">
-                      <button type="button" className="admin-icon-btn" onClick={() => setEditing(p)} aria-label="Editar">
+                      <button type="button" className="admin-icon-btn" onClick={() => setEditing(p)} aria-label={`Editar ${p.name}`}>
                         <Icon name="edit" style={{ width: 16, height: 16 }} />
                       </button>
-                      <button type="button" className="admin-icon-btn danger" onClick={() => handleDelete(p)} aria-label="Eliminar">
+                      <button type="button" className="admin-icon-btn danger" onClick={() => handleDelete(p)} aria-label={`Eliminar ${p.name}`}>
                         <Icon name="trash" style={{ width: 16, height: 16 }} />
                       </button>
                     </div>

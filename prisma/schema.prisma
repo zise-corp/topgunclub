@@ -1,7 +1,7 @@
 // ─────────────────────────────────────────────────────────────────────────────
 // TOP GUN CLUB SRL — Tienda virtual
-// Base de datos: SQLite (archivo prisma/dev.db)
-// Para migrar a Postgres/Supabase solo cambia `provider` y `url`.
+// Base de datos: Postgres (Supabase). `url` = conexión pooled (runtime, PgBouncer);
+// `directUrl` = conexión directa, usada solo por Prisma para migraciones.
 // ─────────────────────────────────────────────────────────────────────────────
 
 generator client {
@@ -9,8 +9,9 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 // ── Usuarios administradores ────────────────────────────────────────────────
@@ -82,6 +83,15 @@ model Order {
   customer  String?
   phone     String?
   note      String?
+  // Entrega
+  deliveryMethod  String  @default("pickup") // "pickup" | "delivery"
+  region          String? // departamento (o "El Alto") — solo si delivery
+  address         String? // Cochabamba: dirección escrita (calle, nº, referencias)
+  locationLat     Float?  // Cochabamba: mapa/geolocalización
+  locationLng     Float?
+  locationMapsUrl String? // Cochabamba: link de Google Maps (armado o pegado)
+  ci              String? // otros departamentos: carnet de identidad
+  email           String? // otros departamentos: correo
   status    String      @default("recibido") // recibido | en_proceso | completado | cancelado
   total     Decimal
   currency  String      @default("USD")

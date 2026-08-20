@@ -53,6 +53,14 @@ export type OrderDTO = {
   customer: string | null;
   phone: string | null;
   note: string | null;
+  deliveryMethod: 'pickup' | 'delivery';
+  region: string | null;
+  address: string | null;
+  locationLat: number | null;
+  locationLng: number | null;
+  locationMapsUrl: string | null;
+  ci: string | null;
+  email: string | null;
   status: string;
   total: number;
   currency: string;
