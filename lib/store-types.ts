@@ -74,6 +74,7 @@ export type CartItem = {
   slug: string;
   name: string;
   price: number;
+  currency: string;
   image: string | null;
   qty: number;
 };

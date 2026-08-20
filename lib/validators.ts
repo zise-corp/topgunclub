@@ -25,7 +25,7 @@ export const productInputSchema = z.object({
   name: z.string().trim().min(2, 'El nombre es obligatorio').max(200),
   description: z.string().trim().max(5000).nullable().optional(),
   price: z.coerce.number().positive('El precio debe ser mayor a 0').max(1_000_000_000),
-  currency: z.string().trim().max(8).default('USD'),
+  currency: z.enum(['USD', 'BOB']).default('USD'),
   categoryId: z.string().trim().min(1, 'Seleccioná una categoría'),
   kind: z.enum(['arma', 'producto'], { message: 'Tipo inválido' }),
   brand: z.string().trim().max(120).nullable().optional(),
@@ -41,6 +41,7 @@ export const orderItemSchema = z.object({
   productId: z.string().trim().nullable().optional(),
   name: z.string().trim().min(1).max(200),
   price: z.coerce.number().nonnegative().max(1_000_000_000),
+  currency: z.enum(['USD', 'BOB']).default('USD'),
   qty: z.coerce.number().int().min(1).max(99),
 });
 

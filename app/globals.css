@@ -5054,6 +5054,45 @@ ul {
   gap: 14px;
 }
 
+.admin-orders__filters {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+
+.admin-orders__filters .admin-search {
+  margin: 0;
+}
+
+.admin-date-filter {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  color: var(--metal);
+  font-family: var(--ff-display);
+  font-size: .72rem;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.admin-date-filter input {
+  height: 42px;
+  padding: 0 12px;
+  color: #fff;
+  color-scheme: dark;
+  background: var(--surface);
+  border: 1px solid var(--line-2);
+  border-radius: var(--r-sm);
+  font-family: var(--ff-body);
+}
+
+.admin-date-filter input:focus {
+  outline: none;
+  border-color: var(--green-bright);
+}
+
 .admin-order {
   background: var(--surface);
   border: 1px solid var(--line);

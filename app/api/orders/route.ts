@@ -42,9 +42,19 @@ export async function POST(req: Request) {
       productId: dbProduct ? dbProduct.id : (it.productId ?? null),
       name: dbProduct ? dbProduct.name : it.name,
       price: dbProduct ? dbProduct.price : it.price,
+      currency: dbProduct ? dbProduct.currency : it.currency,
       qty: Math.min(99, Math.max(1, Math.round(it.qty))),
     };
   });
+
+  const currencies = new Set(items.map((it) => it.currency));
+  if (currencies.size !== 1) {
+    return NextResponse.json(
+      { error: 'Un pedido no puede mezclar productos en dólares y bolivianos' },
+      { status: 400 }
+    );
+  }
+  const currency = items[0].currency;
 
   const total = items.reduce((acc, it) => acc + Number(it.price) * it.qty, 0);
 
@@ -77,8 +87,15 @@ export async function POST(req: Request) {
             ci: isDelivery && !local ? data.ci || null : null,
             email: isDelivery && !local ? data.email || null : null,
             total,
-            currency: 'USD',
-            items: { create: items },
+            currency,
+            items: {
+              create: items.map((item) => ({
+                productId: item.productId,
+                name: item.name,
+                price: item.price,
+                qty: item.qty,
+              })),
+            },
           },
           include: { items: true },
         });

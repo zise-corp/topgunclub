@@ -32,7 +32,7 @@ type DeliveryMethod = 'pickup' | 'delivery';
 const EMPTY_LOCATION: LocationValue = { lat: null, lng: null, mapsUrl: '' };
 
 export default function CartDrawer({ open, onClose }: Props) {
-  const { items, count, total, updateQty, remove, clear } = useCart();
+  const { items, count, total, currency, updateQty, remove, clear } = useCart();
   const [customer, setCustomer] = useState('');
   const [phone, setPhone] = useState('');
   const [note, setNote] = useState('');
@@ -78,10 +78,10 @@ export default function CartDrawer({ open, onClose }: Props) {
     if (orderId) lines.push(`🧾 https://topgunclub.com.bo/pedido/${orderId}`);
     lines.push('');
     items.forEach((it, i) => {
-      lines.push(`${i + 1}. ${it.name} ×${it.qty} — ${formatPrice(it.price * it.qty)}`);
+      lines.push(`${i + 1}. ${it.name} ×${it.qty} — ${formatPrice(it.price * it.qty, it.currency)}`);
     });
     lines.push('');
-    lines.push(`*TOTAL: ${formatPrice(total)}*`);
+    lines.push(`*TOTAL: ${formatPrice(total, currency)}*`);
     if (customer.trim()) lines.push(`\n👤 ${customer.trim()}`);
     if (phone.trim()) lines.push(`📱 ${phone.trim()}`);
 
@@ -166,6 +166,7 @@ export default function CartDrawer({ open, onClose }: Props) {
             productId: it.productId,
             name: it.name,
             price: it.price,
+            currency: it.currency,
             qty: it.qty,
           })),
         }),
@@ -228,17 +229,16 @@ export default function CartDrawer({ open, onClose }: Props) {
         </header>
 
         {/* Fuera del if de items vacíos/con productos: el carrito ya se vació acá
-            arriba (clear()), así que este aviso debe seguir visible igual.
-            El botón se muestra siempre (no solo si el auto-open "falló"): es
-            un clic directo del usuario, así que siempre funciona, sin
-            depender de si el navegador dejó abrir la ventana automática. */}
+            arriba (clear()), así que la confirmación debe seguir visible igual.
+            WhatsApp queda como una acción secundaria por si la ventana no se
+            abrió o el usuario necesita volver a la conversación. */}
         {state === 'done' && waUrl && (
           <div style={{ padding: '16px 22px 0', display: 'flex', flexDirection: 'column', gap: 10 }}>
             <p className="cart-drawer__ok" style={{ margin: 0 }}>
-              Pedido preparado ✓ Tocá el botón para enviarlo por WhatsApp.
+              ¡Pedido registrado! Ya completaste tu compra. Te contactaremos por WhatsApp para confirmar el stock y coordinar la entrega.
             </p>
             <a href={waUrl} target="_blank" rel="noopener noreferrer" className="btn btn--wa btn--block">
-              <Icon name="whatsapp" style={{ width: 19, height: 19 }} /> Enviar por WhatsApp
+              <Icon name="whatsapp" style={{ width: 19, height: 19 }} /> Volver a abrir WhatsApp
             </a>
           </div>
         )}
@@ -263,7 +263,7 @@ export default function CartDrawer({ open, onClose }: Props) {
                   </div>
                   <div className="cart-item__info">
                     <b>{it.name}</b>
-                    <span>{formatPrice(it.price)}</span>
+                    <span>{formatPrice(it.price, it.currency)}</span>
                     <div className="cart-item__row">
                       <div className="store-qty store-qty--sm">
                         <button type="button" onClick={() => updateQty(it.productId, it.qty - 1)} aria-label="Menos">
@@ -284,7 +284,7 @@ export default function CartDrawer({ open, onClose }: Props) {
                       </button>
                     </div>
                   </div>
-                  <b className="cart-item__total">{formatPrice(it.price * it.qty)}</b>
+                  <b className="cart-item__total">{formatPrice(it.price * it.qty, it.currency)}</b>
                 </div>
               ))}
             </div>
@@ -294,7 +294,7 @@ export default function CartDrawer({ open, onClose }: Props) {
                 <span>
                   Subtotal ({count} ítem{count !== 1 ? 's' : ''})
                 </span>
-                <b>{formatPrice(total)}</b>
+                <b>{formatPrice(total, currency)}</b>
               </div>
 
               <label className="field">
@@ -441,7 +441,7 @@ export default function CartDrawer({ open, onClose }: Props) {
           <div className="confirm-modal__panel">
             <h4>¿Confirmás tu pedido?</h4>
             <p>
-              {count} ítem{count !== 1 ? 's' : ''} · <b>{formatPrice(total)}</b>
+              {count} ítem{count !== 1 ? 's' : ''} · <b>{formatPrice(total, currency)}</b>
               <br />
               {isDelivery ? `Envío a domicilio — ${region}` : 'Retiro en el local'}
             </p>

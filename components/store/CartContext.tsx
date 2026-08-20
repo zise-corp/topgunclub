@@ -12,6 +12,7 @@ type CartContextValue = {
   items: CartItem[];
   count: number;
   total: number;
+  currency: string;
   add: (product: ProductDTO, qty?: number) => void;
   remove: (productId: string) => void;
   updateQty: (productId: string, qty: number) => void;
@@ -34,7 +35,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
           setItems(
             parsed.filter(
               (it) => it && typeof it.productId === 'string' && typeof it.qty === 'number'
-            )
+            ).map((it) => ({ ...it, currency: it.currency || 'USD' }))
           );
         }
       }
@@ -55,6 +56,10 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   const add = useCallback((product: ProductDTO, qty = 1) => {
     setItems((prev) => {
+      if (prev.length > 0 && prev[0].currency !== product.currency) {
+        window.alert('Para comprar en otra moneda, primero finalizá o vaciá el pedido actual.');
+        return prev;
+      }
       const existing = prev.find((it) => it.productId === product.id);
       if (existing) {
         return prev.map((it) =>
@@ -68,6 +73,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
           slug: product.slug,
           name: product.name,
           price: product.price,
+          currency: product.currency,
           image: product.images[0]?.url ?? null,
           qty: Math.min(99, qty),
         },
@@ -92,7 +98,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const value = useMemo<CartContextValue>(() => {
     const count = items.reduce((acc, it) => acc + it.qty, 0);
     const total = items.reduce((acc, it) => acc + it.price * it.qty, 0);
-    return { items, count, total, add, remove, updateQty, clear };
+    const currency = items[0]?.currency ?? 'USD';
+    return { items, count, total, currency, add, remove, updateQty, clear };
   }, [items, add, remove, updateQty, clear]);
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

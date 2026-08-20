@@ -467,8 +467,15 @@ function ProductForm({
 
           <div className="admin-form__row">
             <label className="field">
-              <span>Precio (USD) *</span>
+              <span>Precio *</span>
               <input type="number" inputMode="decimal" step="0.01" min="0" value={form.price} onChange={(e) => set('price', e.target.value)} placeholder="0.00" />
+            </label>
+            <label className="field">
+              <span>Moneda *</span>
+              <select value={form.currency} onChange={(e) => set('currency', e.target.value)}>
+                <option value="USD">Dólares ($)</option>
+                <option value="BOB">Bolivianos (Bs)</option>
+              </select>
             </label>
             <label className="field">
               <span>Categoría *</span>

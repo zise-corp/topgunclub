@@ -15,6 +15,7 @@ export default function OrdersManager() {
   const [error, setError] = useState('');
   const [filter, setFilter] = useState<string>('todos');
   const [query, setQuery] = useState('');
+  const [dateFilter, setDateFilter] = useState('');
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -57,6 +58,15 @@ export default function OrdersManager() {
     const q = query.trim().toLowerCase();
     return orders.filter((o) => {
       if (filter !== 'todos' && o.status !== filter) return false;
+      if (dateFilter) {
+        const created = new Date(o.createdAt);
+        const orderDate = [
+          created.getFullYear(),
+          String(created.getMonth() + 1).padStart(2, '0'),
+          String(created.getDate()).padStart(2, '0'),
+        ].join('-');
+        if (orderDate !== dateFilter) return false;
+      }
       if (!q) return true;
       return (
         String(o.number).includes(q) ||
@@ -66,7 +76,7 @@ export default function OrdersManager() {
         o.items.some((it) => it.name.toLowerCase().includes(q))
       );
     });
-  }, [orders, filter, query]);
+  }, [orders, filter, query, dateFilter]);
 
   if (loading && orders.length === 0) {
     return <div className="admin-skeleton-grid">{[0, 1, 2].map((i) => <div key={i} className="admin-skeleton" />)}</div>;
@@ -84,16 +94,32 @@ export default function OrdersManager() {
       {error && <p className="admin-error">{error}</p>}
 
       {orders.length > 0 && (
-        <label className="admin-search admin-search--wide">
-          <Icon name="search" style={{ width: 16, height: 16 }} />
-          <input
-            type="search"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Buscar por N°, cliente, teléfono o producto…"
-            aria-label="Buscar pedidos"
-          />
-        </label>
+        <div className="admin-orders__filters">
+          <label className="admin-search">
+            <Icon name="search" style={{ width: 16, height: 16 }} />
+            <input
+              type="search"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Buscar por N°, cliente, teléfono o producto…"
+              aria-label="Buscar pedidos"
+            />
+          </label>
+          <label className="admin-date-filter">
+            <span>Fecha de venta</span>
+            <input
+              type="date"
+              value={dateFilter}
+              onChange={(e) => setDateFilter(e.target.value)}
+              aria-label="Filtrar pedidos por fecha"
+            />
+          </label>
+          {dateFilter && (
+            <button type="button" className="btn btn--ghost" onClick={() => setDateFilter('')}>
+              Ver todas las fechas
+            </button>
+          )}
+        </div>
       )}
 
       <div className="admin-chips">
@@ -125,10 +151,10 @@ export default function OrdersManager() {
           <p>
             {orders.length === 0
               ? 'Todavía no hay pedidos. Aparecerán acá cuando alguien compre en la tienda.'
-              : 'Ningún pedido coincide con la búsqueda.'}
+              : 'Ningún pedido coincide con los filtros seleccionados.'}
           </p>
           {orders.length > 0 && (
-            <button type="button" className="btn btn--ghost" onClick={() => { setQuery(''); setFilter('todos'); }}>
+            <button type="button" className="btn btn--ghost" onClick={() => { setQuery(''); setFilter('todos'); setDateFilter(''); }}>
               Limpiar filtros
             </button>
           )}
