@@ -20,7 +20,17 @@ export type NavItem = {
 
 export const NAV_ITEMS: NavItem[] = [
   { label: 'Inicio', href: '/' },
-  { 
+  {
+    label: 'Tienda',
+    href: '/tienda',
+    children: [
+      { label: 'Armas de Fuego', href: '/tienda?cat=armas-de-fuego' },
+      { label: 'PCP', href: '/tienda?cat=pcp' },
+      { label: 'Productos', href: '/tienda?cat=productos' },
+      { label: 'Regalos', href: '/tienda?cat=regalos' },
+    ]
+  },
+  {
     label: 'Cursos', 
     href: '/cursos',
     children: [
@@ -36,16 +46,6 @@ export const NAV_ITEMS: NavItem[] = [
     children: [
       { label: 'Cumpleaños', href: '/eventos#cumpleanos' },
       { label: 'Torneos', href: '/eventos#torneos' },
-    ]
-  },
-  { 
-    label: 'Tienda', 
-    href: '/tienda',
-    children: [
-      { label: 'Armas de Fuego', href: '/tienda?cat=armas-de-fuego' },
-      { label: 'PCP', href: '/tienda?cat=pcp' },
-      { label: 'Productos', href: '/tienda?cat=productos' },
-      { label: 'Regalos', href: '/tienda?cat=regalos' },
     ]
   },
   { label: 'Galería', href: '/galeria' },

@@ -5325,6 +5325,45 @@ ul {
   margin-bottom: 22px;
 }
 
+.admin-login__password {
+  position: relative;
+}
+
+.admin-login__password input {
+  padding-right: 82px;
+}
+
+.admin-login__password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+  border: 0;
+  padding: 5px 3px;
+  background: transparent;
+  color: var(--green-bright);
+  font-family: var(--ff-display);
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.admin-login__password-toggle:hover,
+.admin-login__password-toggle:focus-visible {
+  color: #fff;
+}
+
+.admin-login__password-toggle:focus-visible {
+  outline: 1px solid var(--green-bright);
+  outline-offset: 2px;
+}
+
+.admin-login__card > .btn {
+  margin-top: 8px;
+}
+
 .admin-login__back {
   display: block;
   text-align: center;

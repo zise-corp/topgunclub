@@ -174,6 +174,7 @@ export default function AdminPanel() {
 function AdminLogin({ onLogin }: { onLogin: () => void }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
 
@@ -236,20 +237,31 @@ function AdminLogin({ onLogin }: { onLogin: () => void }) {
           </label>
           <label className="field">
             <span>Contraseña</span>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
-              autoComplete="current-password"
-              required
-            />
+            <div className="admin-login__password">
+              <input
+                type={showPassword ? 'text' : 'password'}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                autoComplete="current-password"
+                required
+              />
+              <button
+                type="button"
+                className="admin-login__password-toggle"
+                onClick={() => setShowPassword((visible) => !visible)}
+                aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                aria-pressed={showPassword}
+              >
+                {showPassword ? 'Ocultar' : 'Mostrar'}
+              </button>
+            </div>
           </label>
 
           {error && <p className="admin-error">{error}</p>}
 
           <button type="submit" className="btn btn--wa btn--lg btn--block" disabled={busy}>
-            {busy ? 'Ingresando…' : 'Ingresar'}
+            {busy ? 'Iniciando sesión…' : 'Iniciar Sesión'}
           </button>
 
           <Link href="/" className="admin-login__back">
