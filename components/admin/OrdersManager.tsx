@@ -16,6 +16,8 @@ export default function OrdersManager() {
   const [filter, setFilter] = useState<string>('todos');
   const [query, setQuery] = useState('');
   const [dateFilter, setDateFilter] = useState('');
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [pendingDelete, setPendingDelete] = useState<OrderDTO | null>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -53,6 +55,33 @@ export default function OrdersManager() {
       setError('Error de red al actualizar');
     }
   };
+
+  const deleteOrder = async (order: OrderDTO) => {
+    setDeletingId(order.id);
+    setError('');
+    try {
+      const res = await fetch(`/api/admin/orders/${order.id}`, { method: 'DELETE' });
+      if (!res.ok) {
+        const data = (await res.json().catch(() => null)) as { error?: string } | null;
+        throw new Error(data?.error ?? 'No se pudo eliminar el pedido');
+      }
+      setOrders((prev) => prev.filter((o) => o.id !== order.id));
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Error de red al eliminar');
+    } finally {
+      setDeletingId(null);
+      setPendingDelete(null);
+    }
+  };
+
+  useEffect(() => {
+    if (!pendingDelete) return;
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && !deletingId) setPendingDelete(null);
+    };
+    window.addEventListener('keydown', closeOnEscape);
+    return () => window.removeEventListener('keydown', closeOnEscape);
+  }, [pendingDelete, deletingId]);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -173,16 +202,29 @@ export default function OrdersManager() {
                     </small>
                   </span>
                 </div>
-                <select
-                  value={o.status}
-                  onChange={(e) => changeStatus(o, e.target.value)}
-                  className={'admin-status admin-status--' + o.status}
-                  aria-label={`Estado del pedido ${o.number}`}
-                >
-                  {STATUS_ORDER.map((s) => (
-                    <option key={s} value={s}>{STATUS_LABELS[s]}</option>
-                  ))}
-                </select>
+                <div className="admin-order__actions">
+                  <select
+                    value={o.status}
+                    onChange={(e) => changeStatus(o, e.target.value)}
+                    className={'admin-status admin-status--' + o.status}
+                    aria-label={`Estado del pedido ${o.number}`}
+                    disabled={deletingId === o.id}
+                  >
+                    {STATUS_ORDER.map((s) => (
+                      <option key={s} value={s}>{STATUS_LABELS[s]}</option>
+                    ))}
+                  </select>
+                  <button
+                    type="button"
+                    className="admin-icon-btn danger"
+                    onClick={() => setPendingDelete(o)}
+                    disabled={deletingId === o.id}
+                    aria-label={`Eliminar pedido ${o.number}`}
+                    title="Eliminar pedido"
+                  >
+                    <Icon name="trash" style={{ width: 16, height: 16 }} />
+                  </button>
+                </div>
               </header>
 
               <div className="admin-order__items">
@@ -239,6 +281,52 @@ export default function OrdersManager() {
               </footer>
             </article>
           ))}
+        </div>
+      )}
+
+      {pendingDelete && (
+        <div
+          className="confirm-modal"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="delete-order-title"
+          aria-describedby="delete-order-description"
+          data-native-cursor
+        >
+          <button
+            type="button"
+            className="confirm-modal__backdrop"
+            onClick={() => !deletingId && setPendingDelete(null)}
+            aria-label="Cancelar eliminación"
+          />
+          <div className="confirm-modal__panel confirm-modal__panel--danger">
+            <span className="confirm-modal__danger-icon" aria-hidden="true">
+              <Icon name="trash" style={{ width: 22, height: 22 }} />
+            </span>
+            <h4 id="delete-order-title">¿Eliminar pedido #{pendingDelete.number}?</h4>
+            <p id="delete-order-description">
+              Se eliminarán el pedido y todos sus productos asociados. Esta acción no se puede deshacer.
+            </p>
+            <div className="confirm-modal__actions">
+              <button
+                type="button"
+                className="btn btn--ghost"
+                onClick={() => setPendingDelete(null)}
+                disabled={deletingId === pendingDelete.id}
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                className="btn btn--danger"
+                onClick={() => deleteOrder(pendingDelete)}
+                disabled={deletingId === pendingDelete.id}
+              >
+                <Icon name="trash" style={{ width: 17, height: 17 }} />
+                {deletingId === pendingDelete.id ? 'Eliminando…' : 'Eliminar pedido'}
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

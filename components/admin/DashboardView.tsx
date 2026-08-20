@@ -15,6 +15,17 @@ interface Props {
   onGoToProducts: () => void;
 }
 
+function formatOrderTotals(orders: OrderDTO[]): string {
+  const totals = new Map<string, number>();
+  orders.forEach((order) => {
+    totals.set(order.currency, (totals.get(order.currency) ?? 0) + order.total);
+  });
+  if (totals.size === 0) return formatPrice(0);
+  return [...totals.entries()]
+    .map(([currency, total]) => formatPrice(total, currency))
+    .join(' · ');
+}
+
 export default function DashboardView({ onGoToOrders, onGoToProducts }: Props) {
   const [orders, setOrders] = useState<OrderDTO[]>([]);
   const [products, setProducts] = useState<ProductDTO[]>([]);
@@ -55,9 +66,7 @@ export default function DashboardView({ onGoToOrders, onGoToProducts }: Props) {
     orders.forEach((o) => byStatus.set(o.status, (byStatus.get(o.status) ?? 0) + 1));
 
     // Los cancelados no cuentan como ingreso.
-    const revenue = orders
-      .filter((o) => o.status !== 'cancelado')
-      .reduce((acc, o) => acc + o.total, 0);
+    const revenueOrders = orders.filter((o) => o.status !== 'cancelado');
 
     const now = new Date();
     const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
@@ -65,12 +74,10 @@ export default function DashboardView({ onGoToOrders, onGoToProducts }: Props) {
 
     return {
       byStatus,
-      revenue,
+      revenue: formatOrderTotals(revenueOrders),
       pending: byStatus.get('recibido') ?? 0,
       monthCount: monthOrders.length,
-      monthRevenue: monthOrders
-        .filter((o) => o.status !== 'cancelado')
-        .reduce((acc, o) => acc + o.total, 0),
+      monthRevenue: formatOrderTotals(monthOrders.filter((o) => o.status !== 'cancelado')),
       activeProducts: products.filter((p) => p.active).length,
       hiddenProducts: products.filter((p) => !p.active).length,
       noImage: products.filter((p) => p.images.length === 0).length,
@@ -113,14 +120,14 @@ export default function DashboardView({ onGoToOrders, onGoToProducts }: Props) {
 
         <article className="kpi kpi--green">
           <span className="kpi__label">Ingresos registrados</span>
-          <b className="kpi__value">{formatPrice(stats.revenue)}</b>
+          <b className="kpi__value">{stats.revenue}</b>
           <span className="kpi__foot">Sin contar cancelados</span>
         </article>
 
         <article className="kpi">
           <span className="kpi__label">Este mes</span>
           <b className="kpi__value">{stats.monthCount}</b>
-          <span className="kpi__foot">{formatPrice(stats.monthRevenue)} facturado</span>
+          <span className="kpi__foot">{stats.monthRevenue} facturado</span>
         </article>
 
         <article className="kpi">

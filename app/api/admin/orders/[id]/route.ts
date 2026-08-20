@@ -47,3 +47,19 @@ export async function PATCH(req: Request, ctx: Ctx) {
 
   return NextResponse.json({ order: toOrderDTO(order) });
 }
+
+export async function DELETE(_req: Request, ctx: Ctx) {
+  const admin = await requireAdmin();
+  if (!admin) return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
+
+  const { id } = await ctx.params;
+  const existing = await prisma.order.findUnique({
+    where: { id },
+    select: { id: true },
+  });
+  if (!existing) return NextResponse.json({ error: 'Pedido no encontrado' }, { status: 404 });
+
+  // Los ítems se eliminan automáticamente por la relación onDelete: Cascade.
+  await prisma.order.delete({ where: { id } });
+  return NextResponse.json({ ok: true });
+}

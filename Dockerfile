@@ -19,7 +19,11 @@ COPY . .
 RUN chmod +x node_modules/.bin/next
 
 # Generar el cliente Prisma antes del build
-RUN npx prisma generate
+# Prisma solo necesita URLs sintácticamente válidas para generar el cliente.
+# Las credenciales reales se inyectan al ejecutar el contenedor, nunca en la imagen.
+RUN DATABASE_URL="postgresql://build:build@localhost:5432/build" \
+    DIRECT_URL="postgresql://build:build@localhost:5432/build" \
+    npx prisma generate
 
 RUN npm run build
 
@@ -53,5 +57,5 @@ USER nextjs
 
 EXPOSE 3000
 
-# Aplica migraciones pendientes y arranca el servidor
-CMD ["sh", "-c", "npx prisma migrate deploy && node server.js"]
+# Valida las variables, aplica migraciones pendientes y arranca el servidor.
+CMD ["sh", "-c", "test -n \"$DATABASE_URL\" || { echo 'DATABASE_URL no configurada'; exit 1; }; test -n \"$DIRECT_URL\" || { echo 'DIRECT_URL no configurada'; exit 1; }; npx prisma migrate deploy && exec node server.js"]

@@ -11,7 +11,8 @@ Migrado de HTML + React CDN a Next.js 15 (App Router) con TypeScript.
 
 ```bash
 npm install
-npm run db:migrate   # primera vez: crea la base de datos (prisma/dev.db)
+npm run db:migrate   # desarrollo: crea/aplica migraciones en PostgreSQL
+npm run db:deploy    # producción: aplica migraciones pendientes
 npm run db:seed      # primera vez: carga categorías, 40 productos y el admin
 npm run dev          # http://localhost:3000
 npm run build        # build de producción
@@ -45,27 +46,29 @@ Credenciales por defecto del seed (¡cambialas en producción!):
 
 ### Base de datos
 
-- **Prisma + SQLite** (`prisma/dev.db`, gitignored). Schema en `prisma/schema.prisma`
+- **Prisma + PostgreSQL/Supabase**. Schema en `prisma/schema.prisma`
   (AdminUser, Category, Product, ProductImage, Order, OrderItem).
 - Comandos: `npm run db:migrate` (migraciones), `npm run db:seed`, `npm run db:studio`.
-- Para pasar a Postgres/Supabase: cambiar `provider = "postgresql"` y `DATABASE_URL` en
-  `prisma/schema.prisma` y correr `npm run db:migrate`.
 - Las imágenes se suben a **Cloudinary** (carpeta `tienda`) vía `POST /api/admin/upload`
   (requiere sesión admin). Las claves van en `.env.local`.
 
 ### Variables de entorno
 
-Ver `.env.example`. Mínimo:
+Crear `.env.local` (no se versiona). Variables requeridas:
 
 ```
 NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=
 NEXT_PUBLIC_CLOUDINARY_API_KEY=
 CLOUDINARY_API_SECRET=
-DATABASE_URL="file:./dev.db"
+DATABASE_URL=<URL pooled de PostgreSQL/Supabase para runtime>
+DIRECT_URL=<URL directa de PostgreSQL/Supabase para migraciones>
 SESSION_SECRET=<valor aleatorio largo>
 ADMIN_EMAIL=admin@topgunclub.bo
 ADMIN_PASSWORD=<contraseña>
 ```
+
+En Docker, `.env.local` se inyecta al ejecutar el contenedor mediante
+`docker-compose.yml`; nunca se copia dentro de la imagen.
 
 ## Dónde editar el contenido
 

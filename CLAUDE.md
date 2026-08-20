@@ -88,4 +88,4 @@ ADMIN_EMAIL=                      # seed: admin inicial (default admin@topgunclu
 ADMIN_PASSWORD=                   # seed: contraseña admin inicial (default TopgunClub2026!)
 ```
 
-Create `.env.local` (Next.js) and `.env` (Prisma CLI) with these values — both are gitignored, keep `DATABASE_URL`/`DIRECT_URL` identical in each. Get the connection strings from the Supabase dashboard: project → **Connect** button → ORMs → Prisma. See `.env.example`.
+Keep these values in `.env.local`, which is gitignored and injected at container runtime. Never copy it into the Docker image. Get both connection strings from the Supabase dashboard: project → **Connect** → ORMs → Prisma.

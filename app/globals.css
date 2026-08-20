@@ -3804,6 +3804,34 @@ ul {
   justify-content: center;
 }
 
+.confirm-modal__panel--danger {
+  border-color: rgba(205, 75, 65, .55);
+}
+
+.confirm-modal__danger-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  margin-bottom: 14px;
+  color: #e06b61;
+  background: rgba(192, 57, 43, .12);
+  border: 1px solid rgba(205, 75, 65, .35);
+  border-radius: 50%;
+}
+
+.btn--danger {
+  color: #fff;
+  background: #a93226;
+  border-color: #c94a3d;
+}
+
+.btn--danger:hover:not(:disabled) {
+  background: #c0392b;
+  border-color: #df6255;
+}
+
 /* ── Carrito en el navbar ──────────────────────────────────────────────── */
 
 .nav__cart {
@@ -5362,6 +5390,12 @@ ul {
   color: var(--faint);
   font-size: .88rem;
   margin-bottom: 22px;
+}
+
+.admin-order__actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .admin-login__password {
