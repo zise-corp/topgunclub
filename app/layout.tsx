@@ -32,8 +32,13 @@ const jsonLd = {
   url: 'https://topgunclub.com.bo',
   telephone: '+59169500967',
   // ✅ CUADRADO 512x512 para Google (logo en resultados de búsqueda)
-  image: 'https://res.cloudinary.com/dj5yikcc4/image/upload/c_fill,w_512,h_512/v1781744683/Logo_cdzhn9.png',
-  logo: 'https://res.cloudinary.com/dj5yikcc4/image/upload/c_fill,w_512,h_512/v1781744683/Logo_cdzhn9.png',
+  image: 'https://topgunclub.com.bo/web-app-manifest-512x512.png',
+  logo: {
+    '@type': 'ImageObject',
+    url: 'https://topgunclub.com.bo/web-app-manifest-512x512.png',
+    width: 512,
+    height: 512,
+  },
   address: {
     '@type': 'PostalAddress',
     streetAddress: 'Av. Francisco Bedregal entre Lope de Vega y Mostajo, Zona Temporal',
@@ -93,6 +98,7 @@ export const metadata: Metadata = {
   category: 'sports',
   creator: 'ZISE',
   publisher: 'Top Gun Club SRL',
+  manifest: '/site.webmanifest',
   robots: {
     index: true,
     follow: true,
@@ -111,10 +117,9 @@ export const metadata: Metadata = {
   // favicon.ico lleva entradas BMP 16/32/48 por compatibilidad máxima.
   icons: {
     icon: [
-      { url: '/favicon.ico', sizes: 'any' },
-      { url: '/favicon-96x96.png', sizes: '96x96', type: 'image/png' },
-      { url: '/favicon-192x192.png', sizes: '192x192', type: 'image/png' },
-      { url: '/favicon-512x512.png', sizes: '512x512', type: 'image/png' },
+      { url: '/favicon.svg', type: 'image/svg+xml' },
+      { url: '/web-app-manifest-512x512.png', sizes: '512x512', type: 'image/png' },
+      { url: '/favicon.ico', sizes: '48x48', type: 'image/x-icon' },
     ],
     apple: [{ url: '/apple-touch-icon.png', sizes: '180x180' }],
   },
