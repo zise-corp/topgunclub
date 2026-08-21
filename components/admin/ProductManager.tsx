@@ -34,6 +34,8 @@ export default function ProductManager() {
   const [query, setQuery] = useState('');
   const [catFilter, setCatFilter] = useState('todas');
   const [visFilter, setVisFilter] = useState<'todos' | 'activos' | 'ocultos'>('todos');
+  const [pendingDelete, setPendingDelete] = useState<ProductDTO | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -60,6 +62,15 @@ export default function ProductManager() {
   useEffect(() => {
     load();
   }, [load]);
+
+  useEffect(() => {
+    if (!pendingDelete) return;
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && !deletingId) setPendingDelete(null);
+    };
+    window.addEventListener('keydown', closeOnEscape);
+    return () => window.removeEventListener('keydown', closeOnEscape);
+  }, [pendingDelete, deletingId]);
 
   // Antes de los returns tempranos: los hooks deben ejecutarse siempre.
   const filtered = useMemo(() => {
@@ -117,17 +128,20 @@ export default function ProductManager() {
   };
 
   const handleDelete = async (p: ProductDTO) => {
-    if (!window.confirm(`¿Eliminar "${p.name}"? Esta acción no se puede deshacer.`)) return;
+    setDeletingId(p.id);
+    setError('');
     try {
       const res = await fetch(`/api/admin/products/${p.id}`, { method: 'DELETE' });
       if (!res.ok) {
         const data = (await res.json().catch(() => null)) as { error?: string } | null;
-        setError(data?.error ?? 'No se pudo eliminar');
-        return;
+        throw new Error(data?.error ?? 'No se pudo eliminar');
       }
       setProducts((prev) => prev.filter((x) => x.id !== p.id));
-    } catch {
-      setError('Error de red al eliminar');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Error de red al eliminar');
+    } finally {
+      setDeletingId(null);
+      setPendingDelete(null);
     }
   };
 
@@ -272,7 +286,7 @@ export default function ProductManager() {
                       <button type="button" className="admin-icon-btn" onClick={() => setEditing(p)} aria-label={`Editar ${p.name}`}>
                         <Icon name="edit" style={{ width: 16, height: 16 }} />
                       </button>
-                      <button type="button" className="admin-icon-btn danger" onClick={() => handleDelete(p)} aria-label={`Eliminar ${p.name}`}>
+                      <button type="button" className="admin-icon-btn danger" onClick={() => setPendingDelete(p)} aria-label={`Eliminar ${p.name}`}>
                         <Icon name="trash" style={{ width: 16, height: 16 }} />
                       </button>
                     </div>
@@ -281,6 +295,52 @@ export default function ProductManager() {
               ))}
             </tbody>
           </table>
+        </div>
+      )}
+
+      {pendingDelete && (
+        <div
+          className="confirm-modal"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="delete-product-title"
+          aria-describedby="delete-product-description"
+          data-native-cursor
+        >
+          <button
+            type="button"
+            className="confirm-modal__backdrop"
+            onClick={() => !deletingId && setPendingDelete(null)}
+            aria-label="Cancelar eliminación"
+          />
+          <div className="confirm-modal__panel confirm-modal__panel--danger">
+            <span className="confirm-modal__danger-icon" aria-hidden="true">
+              <Icon name="trash" style={{ width: 22, height: 22 }} />
+            </span>
+            <h4 id="delete-product-title">¿Eliminar producto?</h4>
+            <p id="delete-product-description">
+              Se eliminará <b>“{pendingDelete.name}”</b> junto con sus imágenes. Esta acción no se puede deshacer.
+            </p>
+            <div className="confirm-modal__actions">
+              <button
+                type="button"
+                className="btn btn--ghost"
+                onClick={() => setPendingDelete(null)}
+                disabled={deletingId === pendingDelete.id}
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                className="btn btn--danger"
+                onClick={() => handleDelete(pendingDelete)}
+                disabled={deletingId === pendingDelete.id}
+              >
+                <Icon name="trash" style={{ width: 17, height: 17 }} />
+                {deletingId === pendingDelete.id ? 'Eliminando…' : 'Eliminar'}
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>
@@ -566,7 +626,7 @@ function ProductForm({
             </div>
             <label className="admin-upload__btn">
               <Icon name="image" style={{ width: 20, height: 20 }} />
-              {uploading ? 'Subiendo a Cloudinary…' : 'Subir imágenes'}
+              {uploading ? 'Subiendo imagen…' : 'Subir imágenes'}
               <input
                 type="file"
                 accept="image/jpeg,image/png,image/webp,image/gif,image/avif"

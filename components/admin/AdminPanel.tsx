@@ -10,7 +10,7 @@ import OrdersManager from './OrdersManager';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Panel de administración: login + layout con navegación lateral.
-// Vistas: Resumen, Productos, Categorías, Pedidos.
+// Vistas: Resumen, Categorías, Productos, Pedidos.
 // ─────────────────────────────────────────────────────────────────────────────
 
 type User = { id: string; email: string; name: string; role: string };
@@ -18,8 +18,8 @@ type View = 'resumen' | 'productos' | 'categorias' | 'pedidos';
 
 const NAV: { id: View; label: string; icon: IconName; hint: string }[] = [
   { id: 'resumen', label: 'Resumen', icon: 'chart', hint: 'Métricas y últimos pedidos' },
-  { id: 'productos', label: 'Productos', icon: 'package', hint: 'Catálogo de la tienda' },
   { id: 'categorias', label: 'Categorías', icon: 'tag', hint: 'Agrupación de productos' },
+  { id: 'productos', label: 'Productos', icon: 'package', hint: 'Catálogo de la tienda' },
   { id: 'pedidos', label: 'Pedidos', icon: 'cart', hint: 'Ventas por WhatsApp' },
 ];
 

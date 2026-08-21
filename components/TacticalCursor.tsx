@@ -1,7 +1,10 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
+import { usePathname } from 'next/navigation';
 
 export default function TacticalCursor() {
+  const pathname = usePathname();
+  const isAdmin = pathname?.startsWith('/admin') ?? false;
   const dotRef  = useRef<HTMLDivElement>(null);
   const ringRef = useRef<HTMLDivElement>(null);
   const pos     = useRef({ x: -200, y: -200 });
@@ -12,6 +15,11 @@ export default function TacticalCursor() {
   const [enabled, setEnabled] = useState(false);
 
   useEffect(() => {
+    if (isAdmin) {
+      document.documentElement.style.cursor = '';
+      setEnabled(false);
+      return;
+    }
     // don't render/activate on touch devices (no mouse cursor)
     if (window.matchMedia('(pointer: coarse)').matches) return;
     setEnabled(true);
@@ -74,7 +82,7 @@ export default function TacticalCursor() {
       document.documentElement.removeEventListener('mouseleave', onLeave);
       cancelAnimationFrame(raf.current);
     };
-  }, []);
+  }, [isAdmin]);
 
   // On touch devices nothing is rendered, so the crosshair can't get stuck at 0,0
   if (!enabled) return null;

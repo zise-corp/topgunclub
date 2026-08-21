@@ -3,6 +3,7 @@ import { prisma } from '@/lib/db';
 import { requireAdmin } from '@/lib/session';
 import { toCategoryDTO, uniqueSlug } from '@/lib/server-dto';
 import { categoryInputSchema } from '@/lib/validators';
+import { z } from 'zod';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -53,4 +54,35 @@ export async function POST(req: Request) {
   });
 
   return NextResponse.json({ category: toCategoryDTO(category) }, { status: 201 });
+}
+
+const reorderSchema = z.object({
+  orderedIds: z.array(z.string().min(1)).min(1).max(999),
+});
+
+export async function PATCH(req: Request) {
+  const admin = await requireAdmin();
+  if (!admin) return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
+
+  const parsed = reorderSchema.safeParse(await req.json().catch(() => null));
+  if (!parsed.success || new Set(parsed.data.orderedIds).size !== parsed.data.orderedIds.length) {
+    return NextResponse.json({ error: 'Orden de categorías inválido' }, { status: 400 });
+  }
+
+  const existing = await prisma.category.findMany({ select: { id: true } });
+  const existingIds = new Set(existing.map((category) => category.id));
+  if (
+    existingIds.size !== parsed.data.orderedIds.length ||
+    parsed.data.orderedIds.some((id) => !existingIds.has(id))
+  ) {
+    return NextResponse.json({ error: 'La lista de categorías está incompleta' }, { status: 400 });
+  }
+
+  await prisma.$transaction(
+    parsed.data.orderedIds.map((id, index) =>
+      prisma.category.update({ where: { id }, data: { sortOrder: index } })
+    )
+  );
+
+  return NextResponse.json({ ok: true });
 }
