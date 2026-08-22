@@ -1,4 +1,5 @@
 FROM node:22-alpine AS base
+RUN npm install --global npm@11.6.1
 
 # ── Dependencias ──────────────────────────────────────────────
 FROM base AS deps
