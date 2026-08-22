@@ -52,11 +52,10 @@ COPY --from=builder --chown=nextjs:nodejs /app/node_modules/c12 ./node_modules/c
 COPY --from=builder --chown=nextjs:nodejs /app/node_modules/deepmerge-ts ./node_modules/deepmerge-ts
 COPY --from=builder --chown=nextjs:nodejs /app/node_modules/effect ./node_modules/effect
 COPY --from=builder --chown=nextjs:nodejs /app/node_modules/empathic ./node_modules/empathic
-COPY --from=builder --chown=nextjs:nodejs /app/node_modules/.bin/prisma* ./node_modules/.bin/
 
 USER nextjs
 
 EXPOSE 3000
 
 # Valida las variables, aplica migraciones pendientes y arranca el servidor.
-CMD ["sh", "-c", "test -n \"$DATABASE_URL\" || { echo 'DATABASE_URL no configurada'; exit 1; }; test -n \"$DIRECT_URL\" || { echo 'DIRECT_URL no configurada'; exit 1; }; npx prisma migrate deploy && exec node server.js"]
+CMD ["sh", "-c", "test -n \"$DATABASE_URL\" || { echo 'DATABASE_URL no configurada'; exit 1; }; test -n \"$DIRECT_URL\" || { echo 'DIRECT_URL no configurada'; exit 1; }; node node_modules/prisma/build/index.js migrate deploy && exec node server.js"]
