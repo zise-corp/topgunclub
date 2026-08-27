@@ -4,7 +4,7 @@ import type { CategoryDTO } from '@/lib/store-types';
 import Icon from '@/components/Icon';
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Gestión de categorías: listado, alta, renombrado y eliminación
+// Gestión de categorías: listado, alta, edición y eliminación
 // ─────────────────────────────────────────────────────────────────────────────
 
 export default function CategoryManager() {
@@ -16,6 +16,7 @@ export default function CategoryManager() {
   const [busy, setBusy] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editName, setEditName] = useState('');
+  const [editDescription, setEditDescription] = useState('');
   const [reordering, setReordering] = useState(false);
   const [draggedId, setDraggedId] = useState<string | null>(null);
   const [dragOverId, setDragOverId] = useState<string | null>(null);
@@ -78,7 +79,7 @@ export default function CategoryManager() {
     }
   };
 
-  const rename = async (id: string) => {
+  const updateCategory = async (id: string) => {
     if (editName.trim().length < 2) return;
     setBusy(true);
     setError('');
@@ -86,14 +87,17 @@ export default function CategoryManager() {
       const res = await fetch(`/api/admin/categories/${id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: editName.trim() }),
+        body: JSON.stringify({
+          name: editName.trim(),
+          description: editDescription.trim() || null,
+        }),
       });
       const data = (await res.json().catch(() => null)) as { error?: string } | null;
-      if (!res.ok) throw new Error(data?.error ?? 'No se pudo renombrar');
+      if (!res.ok) throw new Error(data?.error ?? 'No se pudo actualizar la categoría');
       setEditingId(null);
       await load();
     } catch (e) {
-      setError(e instanceof Error ? e.message : 'Error al renombrar');
+      setError(e instanceof Error ? e.message : 'Error al actualizar');
     } finally {
       setBusy(false);
     }
@@ -192,12 +196,13 @@ export default function CategoryManager() {
           maxLength={80}
           required
         />
-        <input
+        <textarea
           className="field"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           placeholder="Descripción corta (opcional)"
           maxLength={500}
+          rows={2}
         />
         <button type="submit" className="btn btn--wa" disabled={busy || name.trim().length < 2}>
           <Icon name="plus" style={{ width: 15, height: 15 }} /> Crear
@@ -228,7 +233,16 @@ export default function CategoryManager() {
                   maxLength={80}
                   autoFocus
                 />
-                <button type="button" className="btn btn--wa" onClick={() => rename(c.id)} disabled={busy}>
+                <textarea
+                  className="field"
+                  value={editDescription}
+                  onChange={(e) => setEditDescription(e.target.value)}
+                  placeholder="Descripción corta (opcional)"
+                  aria-label={`Descripción de ${c.name}`}
+                  maxLength={500}
+                  rows={2}
+                />
+                <button type="button" className="btn btn--wa" onClick={() => updateCategory(c.id)} disabled={busy || editName.trim().length < 2}>
                   Guardar
                 </button>
                 <button type="button" className="btn btn--ghost" onClick={() => setEditingId(null)}>
@@ -295,8 +309,9 @@ export default function CategoryManager() {
                     onClick={() => {
                       setEditingId(c.id);
                       setEditName(c.name);
+                      setEditDescription(c.description ?? '');
                     }}
-                    aria-label="Renombrar"
+                    aria-label="Editar categoría"
                   >
                     <Icon name="edit" style={{ width: 15, height: 15 }} />
                   </button>

@@ -78,10 +78,18 @@ export default function StorePage({ products, categories }: Props) {
   // encabezado incluido. Se agrupa desde los propios productos (así nunca se
   // pierde ninguno) y los bloques respetan el orden definido en el panel.
   const grouped = useMemo(() => {
-    const map = new Map<string, { name: string; slug: string; items: ProductDTO[] }>();
+    const categoryDescriptions = new Map(categories.map((c) => [c.slug, c.description]));
+    const map = new Map<string, { name: string; slug: string; description: string | null; items: ProductDTO[] }>();
     filtered.forEach((p) => {
       const key = p.category.slug;
-      if (!map.has(key)) map.set(key, { name: p.category.name, slug: key, items: [] });
+      if (!map.has(key)) {
+        map.set(key, {
+          name: p.category.name,
+          slug: key,
+          description: categoryDescriptions.get(key) ?? null,
+          items: [],
+        });
+      }
       map.get(key)!.items.push(p);
     });
     const order = new Map(categories.map((c, i) => [c.slug, i]));
@@ -184,6 +192,7 @@ export default function StorePage({ products, categories }: Props) {
                     {g.items.length} {g.items.length === 1 ? 'artículo' : 'artículos'}
                   </span>
                   <h2 className="section-title store-section__title">{splitTitle(g.name)}</h2>
+                  {g.description && <p className="store-section__description">{g.description}</p>}
                 </div>
                 <div className="store-grid">
                   {g.items.map((p) => (

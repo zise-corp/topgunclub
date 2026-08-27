@@ -5103,14 +5103,27 @@ ul {
 }
 
 .admin-cat__edit {
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(180px, .8fr) minmax(240px, 1.4fr) auto auto;
   gap: 10px;
   align-items: center;
   flex: 1;
 }
 
-.admin-cat__edit input {
-  flex: 1;
+.admin-form--cat textarea {
+  min-height: 44px;
+  resize: vertical;
+}
+
+.admin-cat__edit textarea {
+  min-height: 44px;
+  resize: vertical;
+}
+
+@media (max-width: 900px) {
+  .admin-cat__edit {
+    grid-template-columns: 1fr;
+  }
 }
 
 .admin-chips {
@@ -5746,6 +5759,14 @@ select.field:focus-visible,
 
 .store-section__title {
   font-size: clamp(1.9rem, 3.8vw, 2.9rem);
+}
+
+.store-section__description {
+  max-width: 720px;
+  margin: 12px auto 0;
+  color: var(--muted);
+  line-height: 1.65;
+  white-space: pre-line;
 }
 
 /* Entrada de las tarjetas de producto: animación CSS autónoma.
