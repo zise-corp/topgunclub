@@ -16,20 +16,37 @@ services:
       - "traefik.http.services.topgunclub-service.loadbalancer.server.port=3000"
 
       # Router HTTPS (principal)
-      - "traefik.http.routers.topgunclub.rule=Host(`topgunclub.com.bo`) || Host(`www.topgunclub.com.bo`)"
+      - "traefik.http.routers.topgunclub.rule=Host(`topgunclub.com.bo`)"
       - "traefik.http.routers.topgunclub.entrypoints=websecure"
       - "traefik.http.routers.topgunclub.tls=true"
       - "traefik.http.routers.topgunclub.tls.certresolver=letsencrypt"
       - "traefik.http.routers.topgunclub.service=topgunclub-service"
 
+      # Router HTTPS para www: consolida todo en el dominio canónico sin www
+      - "traefik.http.routers.topgunclub-www.rule=Host(`www.topgunclub.com.bo`)"
+      - "traefik.http.routers.topgunclub-www.entrypoints=websecure"
+      - "traefik.http.routers.topgunclub-www.tls=true"
+      - "traefik.http.routers.topgunclub-www.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.topgunclub-www.middlewares=redirect-www-to-canonical"
+      - "traefik.http.routers.topgunclub-www.service=topgunclub-service"
+
       # Router HTTP (redirección automática a HTTPS)
-      - "traefik.http.routers.topgunclub-http.rule=Host(`topgunclub.com.bo`) || Host(`www.topgunclub.com.bo`)"
+      - "traefik.http.routers.topgunclub-http.rule=Host(`topgunclub.com.bo`)"
       - "traefik.http.routers.topgunclub-http.entrypoints=web"
       - "traefik.http.routers.topgunclub-http.middlewares=redirect-to-https"
       - "traefik.http.routers.topgunclub-http.service=topgunclub-service"
 
+      # Router HTTP para www: redirección directa al dominio canónico HTTPS
+      - "traefik.http.routers.topgunclub-www-http.rule=Host(`www.topgunclub.com.bo`)"
+      - "traefik.http.routers.topgunclub-www-http.entrypoints=web"
+      - "traefik.http.routers.topgunclub-www-http.middlewares=redirect-www-to-canonical"
+      - "traefik.http.routers.topgunclub-www-http.service=topgunclub-service"
+
       # Middleware global de redirección
       - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.redirect-www-to-canonical.redirectregex.regex=^https?://www\\.topgunclub\\.com\\.bo/(.*)"
+      - "traefik.http.middlewares.redirect-www-to-canonical.redirectregex.replacement=https://topgunclub.com.bo/$${1}"
+      - "traefik.http.middlewares.redirect-www-to-canonical.redirectregex.permanent=true"
 
 networks:
   web:

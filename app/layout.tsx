@@ -110,17 +110,9 @@ export const metadata: Metadata = {
       'max-video-preview': -1,
     },
   },
-  // ✅ CORREGIDO: FAVICONS LOCALES (como ZISE)
-  // Juego de íconos generado desde el logo (escudo central sobre el fondo
-  // oscuro de la marca). El logo completo es 2.3:1 y, encajado en un cuadrado,
-  // quedaba ilegible a 16-32px; el escudo se reconoce bien a ese tamaño.
-  // favicon.ico lleva entradas BMP 16/32/48 por compatibilidad máxima.
-  // Para que el favicon salga en los resultados de Google, el ícono debe ser
-  // cuadrado y MÚLTIPLO DE 48px (48, 96, 144, 192…) — es un requisito explícito
-  // de Google. Antes se declaraba un PNG de 512 (no es múltiplo de 48) y un SVG
-  // de 212 KB, ambos con el logo BLANCO sobre fondo transparente: Google dibuja
-  // el favicon sobre fondo blanco, así que quedaba invisible y mostraba el globo
-  // genérico. Ahora todos los íconos llevan el fondo oscuro de la marca.
+  // Iconos cuadrados con fondo oscuro opaco y emblema central de la marca.
+  // Las URLs se mantienen estables para que Google pueda volver a procesarlas.
+  // Google recomienda un favicon de 48x48 o mayor para resultados de búsqueda.
   icons: {
     icon: [
       { url: '/favicon.ico', sizes: '48x48', type: 'image/x-icon' },
