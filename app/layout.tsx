@@ -115,11 +115,17 @@ export const metadata: Metadata = {
   // oscuro de la marca). El logo completo es 2.3:1 y, encajado en un cuadrado,
   // quedaba ilegible a 16-32px; el escudo se reconoce bien a ese tamaño.
   // favicon.ico lleva entradas BMP 16/32/48 por compatibilidad máxima.
+  // Para que el favicon salga en los resultados de Google, el ícono debe ser
+  // cuadrado y MÚLTIPLO DE 48px (48, 96, 144, 192…) — es un requisito explícito
+  // de Google. Antes se declaraba un PNG de 512 (no es múltiplo de 48) y un SVG
+  // de 212 KB, ambos con el logo BLANCO sobre fondo transparente: Google dibuja
+  // el favicon sobre fondo blanco, así que quedaba invisible y mostraba el globo
+  // genérico. Ahora todos los íconos llevan el fondo oscuro de la marca.
   icons: {
     icon: [
-      { url: '/favicon.svg', type: 'image/svg+xml' },
-      { url: '/web-app-manifest-512x512.png', sizes: '512x512', type: 'image/png' },
       { url: '/favicon.ico', sizes: '48x48', type: 'image/x-icon' },
+      { url: '/favicon-96x96.png', sizes: '96x96', type: 'image/png' },
+      { url: '/favicon-192x192.png', sizes: '192x192', type: 'image/png' },
     ],
     apple: [{ url: '/apple-touch-icon.png', sizes: '180x180' }],
   },
